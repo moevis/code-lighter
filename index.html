@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="dist/code-lighter.js"></script>
+		<script type="text/javascript">
+			window.onload = function () {
+				lighter.on({target:document.querySelector('#area'),language:'javascript'});
+			}
+		</script>
+		<style type="text/css">
+			#area {
+				width: 500px;
+				height: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<textarea id="area">
+			//comment
+			function helloworld() {
+				alert("hello");
+			}
+		</textarea>
+	</body>
+</html>

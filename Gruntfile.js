@@ -7,7 +7,7 @@ module.exports = function (grunt) {
       options: {
         separator: ';',
         stripBanners: true,
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */',
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
       },
       dist: {
         src: ['./lib/main.js', './lib/lexer.js'],
