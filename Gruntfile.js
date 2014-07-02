@@ -5,7 +5,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       options: {
-        separator: ';',
+        separator: '\n',
         stripBanners: true,
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
       },
@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['lib/*.js']
+        files: ['./lib/*.js']
       },
       task: ['concat']
     }
