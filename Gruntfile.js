@@ -16,17 +16,20 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['./lib/*.js']
-      },
-      task: ['concat']
+        files: ['./lib/*.js'],
+        tasks: ['concat']
+      }
     }
   });
+
+
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.event.on('watch', function(action, filepath, target) {
     grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
   });
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.registerTask('default', ['watch']);
+
+  grunt.registerTask('default', ['watch:scripts']);
   grunt.registerTask('cat', ['concat']);
 };
