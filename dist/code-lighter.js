@@ -1,4 +1,4 @@
-/*! blog - v0.0.1 - 2014-07-03 */
+/*! blog - v0.0.1 - 2014-07-04 */
 'use strict';
 
 var lighter = (function () {
@@ -95,19 +95,19 @@ var lighter = (function () {
 		});
 	};
 
-	function Line(text,state) {
+	$.Line(text,state) {
 		this.text   = text;
 		this.state  = state;
 	}
 
-	function Stream(text) {
+	$.Stream(text) {
 		this.number = 0;
 		this.pos = 0;
 		this.lines = this.splitLines(text);
 	}
 
-	Stream.EOL = -1;
-	Stream.EOF = -2;
+	$.Stream.EOL = -1;
+	$.Stream.EOF = -2;
 
 	Stream.prototype.read = function() {
 		if (this.number < this.lines.length) {
@@ -124,15 +124,27 @@ var lighter = (function () {
 		}
 	};
 
+	Stream.prototype.pick = function() {
+		if (this.number < this.lines.length) {
+			if (this.pos < this.lines[this.number].length) {
+				return this.lines[this.number][this.pos+1];
+			} else {
+				return Stream.EOL;
+			}
+		} else {
+			return Stream.EOF;
+		}
+	};
+
 	Stream.prototype.setLine = function(text, number) {
 		this.lines[number] = text;
 	};
 
 	Stream.prototype.addLine = function(text, number) {
 		if (number === undefined) {
-			this.lines.push(new Line(text , null));
+			this.lines.push(new $.Line(text , null));
 		}else{
-			this.lines.splice(number,0, new Line(text, null));
+			this.lines.splice(number,0, new $.Line(text, null));
 		}
 	};
 
@@ -152,6 +164,10 @@ var lighter = (function () {
 		return text.split(/\r\n?|\n/g);
 	};
 
+	$.spanStyle = function (text, class) {
+		return '<span class=' + class + '>' + text + '</span>';
+	}
+
 	$.prepareLayer = function () {
 
 	};
@@ -162,8 +178,48 @@ var lighter = (function () {
 
 (function($) {
 	$.lexer = $.lexer || {};
-	$.lexer['javascript'] = function () {
-		
+	
+	var token = {};
+
+	token.type = {
+		NUMBER: 0,
+		BRACKET: 1,
+		OPERATION: 2,
+		STRING: 3,
+		BRACE: 4,
+		SIMBOL: 5,
+		VAR: 6
+	};
+
+	var state = {
+		VARS: 0,
+		STATEMENTS: 1
+
+	}
+	var keyValues = {
+
+	};
+
+	var buffer = '';
+
+	var addStyle = function (stream) {
+
+		var tokens = [],
+			states = [],
+			c = '';
+
+		do {
+
+			c = stream.read();
+			if (c == '/') {
+
+			}
+
+		} while(c != $.Stream.EOF);
+	}
+
+	$.lexer['javascript'] = function (editor, opt) {
+
 	};
 }(lighter));
 
