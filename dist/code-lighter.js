@@ -82,6 +82,8 @@ var lighter = (function () {
 
 		var stream = new Stream(editor.target.value);
 
+		var lexer = $.lexer[editor.language];
+
 		var displayLayer = document.createElement('div');
 
 		editor.target.parentNode.insertBefore(displayLayer,editor.target);
