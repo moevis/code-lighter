@@ -217,7 +217,9 @@ var lighter = (function () {
 		EOL: 6,
 		EOF: 7,
 		VAR: 8,
-		UNKNOWN: 9
+		COMMENT: 9,
+		KEYS: 10,
+		UNKNOWN: 11
 	};
 
 	var State = {
@@ -238,7 +240,9 @@ var lighter = (function () {
 		INEQ: 14,
 		INSTRING: 15,
 		INMULTICOMMENT: 16,
-		DONE: 17
+		INMULTICOMMENTEND: 17,
+		EOF: 18,
+		DONE: 19
 	};
 
 	var keyValues = {
@@ -257,7 +261,7 @@ var lighter = (function () {
 		Regex: 0
 	};
 
-	var addStyle = function (stream) {
+	var scan = function (stream) {
 
 		var tokens 	     = [],
 			state        = 0,
@@ -270,6 +274,10 @@ var lighter = (function () {
 			c = stream.read();
 			save = true;
 
+			if (c === $.Stream.EOF) {
+				state = State.EOF;
+			}
+
 			switch (state) {
 				case State.START:
 					if ($.type.isNum(c)) {
@@ -278,16 +286,21 @@ var lighter = (function () {
 						state = State.INID;
 					}else if ($.type.isWhite(c)) {
 						save = false;
-					}else if (c === '{') {
+					}else if (c === '{' || c === '}') {
 						save         = false;
 						currentToken = Token.type.BRACKET;
 						state        = State.INBLOCK;
 					}else {
-						state = State.DONE;
 						switch(c) {
 							case $.Stream.EOF:
+								state = State.DONE;
 								save = false;
 								currentToken = Token.type.EOF;
+								break;
+							case $.Stream.EOL:
+								state = State.DONE;
+								save = false;
+								currentToken = Token.type.EOL;
 								break;
 							case '=':
 								state = State.INEQ;
@@ -314,7 +327,11 @@ var lighter = (function () {
 								state = State.INMOD;
 								break;
 							case ',':
+							case ':':
+							case '[':
+							case ']':
 							case ';':
+							case '.':
 								currentToken = Token.type.SIMBOL;
 								break;
 							case '(':
@@ -349,7 +366,7 @@ var lighter = (function () {
 					break;
 
 				case State.INEQ:
-					if (c == '=') {
+					if (c === '=') {
 						// equal
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -363,7 +380,7 @@ var lighter = (function () {
 					break;
 
 				case State.INLESS:
-					if (c == '=') {
+					if (c === '=') {
 						// less and equal
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -377,7 +394,7 @@ var lighter = (function () {
 					break;
 
 				case State.INGEATER:
-					if (c == '=') {
+					if (c === '=') {
 						// greater and equal
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -391,11 +408,11 @@ var lighter = (function () {
 					break;
 
 				case State.INPLUS:
-					if (c == '=') {
+					if (c === '=') {
 						// plugs itself
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
-					} else if (c == '+'){
+					} else if (c === '+'){
 						// plus plus
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -409,11 +426,11 @@ var lighter = (function () {
 					break;
 
 				case State.INMINUS:
-					if (c == '=') {
+					if (c === '=') {
 						// minus itself
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
-					} else if (c == '-'){
+					} else if (c === '-'){
 						// minus minus
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -427,7 +444,7 @@ var lighter = (function () {
 					break;
 
 				case State.INTIMES:
-					if (c == '=') {
+					if (c === '=') {
 						// times itsefl
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -441,14 +458,14 @@ var lighter = (function () {
 					break;
 
 				case State.INDIV:
-					if (c == '=') {
+					if (c === '=') {
 						// divide
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
 						save = false;
-					} else if (c == '/'){
+					} else if (c === '/'){
 						state = State.INCOMMENT;
-					} else if (c == '*') {
+					} else if (c === '*') {
 						state = State.INMULTICOMMENT;
 					} else {
 						// divide
@@ -458,8 +475,62 @@ var lighter = (function () {
 						save = false;
 					}
 					break;
+
+				case State.INCOMMENT:
+					if (c === $.Stream.EOL) {
+						stream.putBack();
+						state = State.DONE;
+						save = false;
+						currentToken = Token.type.COMMENT;
+					}
+					break;
+
+				case State.INMULTICOMMENT:
+					if (c === '*') {
+						if (stream.pick() === '/') {
+							state = State.INMULTICOMMENTEND;
+						}
+					} else if (c === State.EOL) {
+						if (stream.pick() === $.Stream.EOF) {
+							state = State.DONE;
+							save = false;
+							stream.putBack();
+						}
+					}
+					break;
+
+				case State.INMULTICOMMENTEND:
+					state        = State.DONE;
+					currentToken = Token.type.COMMENT;
+					break;
+
+				default:
+					//never reach
+					break;
+			}
+
+			if (save === true) {
+				buffer += c;
+			}
+
+			if (state == State.DONE) {
+				if (currentToken === Token.type.VAR) {
+					if (buffer in keyValues) {
+						currentToken = Toen.type.KEYS;
+					}
+				}
+				tokens.push({text: buffer, type: currentToken});
+				if (currentToken !== Token.type.EOF) {
+					state = State.START;
+					buffer = '';
+				} else {
+					state = State.DONE;
+				}
+
 			}
 		}
+
+		return tokens;
 	};
 
 	$.lexer['javascript'] = function (editor, opt) {
