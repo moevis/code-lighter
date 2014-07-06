@@ -1,0 +1,21 @@
+div .EOL{
+	display: block;
+}
+
+div .KEYS{
+	color: #1779E4;
+}
+
+
+div .COMMENT{
+	color: #157921;
+}
+
+
+div .NUMBER{
+	color: #026F8A;
+}
+
+div .STRING{
+	color: #E46D10;
+}

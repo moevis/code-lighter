@@ -80,13 +80,20 @@ var lighter = (function () {
 			language: opt.language
 		};
 
-		var stream = new Stream(editor.target.value);
-
-		var lexer = $.lexer[editor.language];
-
-		var displayLayer = document.createElement('div');
+		var stream = new $.Stream(editor.target.value),
+			lexer = $.lexer[editor.language],
+			displayLayer = document.createElement('div'),
+			tokens = lexer.scan(stream);
 
 		editor.target.parentNode.insertBefore(displayLayer,editor.target);
+
+		var htmlContent = '';
+
+		tokens.forEach(function (token, i) {
+			htmlContent += $.spanStyle(token.text, lexer.map[token.type]);
+		});
+
+		displayLayer.innerHTML = htmlContent;
 
 		$.addEventHandler(editor.target, 'click', function (e) {
 			console.log(e);
@@ -127,7 +134,7 @@ var lighter = (function () {
     };
 
     $.Stream.prototype.putBack = function() {
-        if (this.pos == 0) {
+        if (this.pos === 0) {
             this.pos = this.lines[--this.number].length;
         } else {
             this.pos--;
@@ -175,7 +182,7 @@ var lighter = (function () {
 	};
 
 	$.spanStyle = function (text, classStyle) {
-		return '<span class="' + classStyle + '"">' + text + '</span>';
+		return (classStyle !== "WHITE")?('<span class="' + classStyle + '">' + $.escapeHTML(text) + '</span>'): ($.escapeHTML(text));
 	};
 
 	$.prepareLayer = function () {
@@ -198,7 +205,17 @@ var lighter = (function () {
 
 	$.type.isWhite = function (c) {
 		return (c === '\t' || c === ' ');
-	}
+	};
+
+	$.escapeHTML = function (content) {
+		return content
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/ /g, "&nbsp;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+	};
 
 	return $;
 
@@ -210,6 +227,7 @@ var lighter = (function () {
 	var Token = {};
 
 	Token.type = {
+		WHITE: -1,
 		NUMBER: 0,
 		BRACKET: 1,
 		OPERATION: 2,
@@ -223,6 +241,14 @@ var lighter = (function () {
 		KEYS: 10,
 		UNKNOWN: 11
 	};
+
+	Token.map = (function(types) {
+		var ret = {};
+		for (var name in types) {
+			ret[types[name]] = name;
+		}
+		return ret;
+	}(Token.type));
 
 	var State = {
 		START: 0,
@@ -243,7 +269,10 @@ var lighter = (function () {
 		INSTRING: 15,
 		INMULTICOMMENT: 16,
 		INMULTICOMMENTEND: 17,
-		DONE: 18
+		INQUOTATION: 18,
+		INSINGLEQUOTATION: 19,
+		INWHITE: 20,
+		DONE: 21
 	};
 
 	var keyValues = {
@@ -262,13 +291,23 @@ var lighter = (function () {
 		Regex: 0
 	};
 
-	var scan = function (stream) {
+	var scan = function (stream, opt) {
 
 		var tokens       = [],
 			state        = 0,
 			currentToken = null,
 			buffer       = '',
-			c            = '';
+			c            = '',
+			tabSpace     = 4;
+
+		if (opt !== undefined) {
+			tabSpace = opt.tabSpace;
+		}
+
+		var intent = '';
+		for (var i = 0; i < tabSpace; i++) {
+			intent += ' ';
+		}
 
 		while (state !== State.DONE) {
 
@@ -282,7 +321,7 @@ var lighter = (function () {
 					}else if ($.type.isAlpha(c)) {
 						state = State.INID;
 					}else if ($.type.isWhite(c)) {
-						save = false;
+						state = State.INWHITE;
 					}else if (c === '{' || c === '}') {
 						currentToken = Token.type.BRACKET;
 						state        = State.DONE;
@@ -339,12 +378,36 @@ var lighter = (function () {
 								state        = State.DONE;
 								currentToken = Token.type.BRACE;
 								break;
+							case '\'':
+								state = State.INSINGLEQUOTATION;
+								break;
+							case '"':
+								state = State.INQUOTATION;
+								break;
 							default:
 								state        = State.DONE;
 								currentToken = Token.type.UNKNOWN;
 								break;
 						}
 					}
+					break;
+
+				case State.INSINGLEQUOTATION:
+					if (c === '\'') {
+						state = State.DONE;
+						currentToken = Token.type.STRING;
+					}
+					break;
+
+				case State.INQUOTATION:
+					if (c === '"') {
+						state = State.DONE;
+						currentToken = Token.type.STRING;
+					}
+					break;
+
+				case '"':
+					state = State.INQUOTATION;
 					break;
 
 				case State.INNUM:
@@ -362,6 +425,15 @@ var lighter = (function () {
 						save         = false;
 						state        = State.DONE;
 						currentToken = Token.type.VAR;
+					}
+					break;
+
+				case State.INWHITE:
+					if (!$.type.isWhite(c)) {
+						stream.putBack();
+						save         = false;
+						state        = State.DONE;
+						currentToken = Token.type.WHITE;
 					}
 					break;
 
@@ -510,7 +582,12 @@ var lighter = (function () {
 			}
 
 			if (save === true) {
-				buffer += c;
+				if (c === '\t') {
+					buffer += intent;
+				} else {
+					buffer += c;
+				}
+				
 			}
 
 			if (state == State.DONE) {
@@ -532,7 +609,10 @@ var lighter = (function () {
 		return tokens;
 	};
 
-	$.lexer['javascript'] = scan;
+	$.lexer['javascript'] = {
+		scan: scan,
+		map: Token.map
+	};
 
 }(lighter));
 

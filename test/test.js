@@ -23,11 +23,18 @@ test('lighter.stream', function() {
 	
 });
 
+test('lighter.type', function() {
+
+	ok( lighter.type.isWhite('\t'), 'isWhite \\t');
+	ok( lighter.type.isWhite(' '), 'isWhite \\n');
+	
+});
+
 test('lighter.lexer.javascript', function() {
 
 	var stream = new lighter.Stream(func);
 	var lexer = lighter.lexer.javascript;
 
-	equal(lexer(stream)[0].text, 'function', 'First token');
+	equal(lexer.scan(stream)[0].text, 'function', 'First token');
 	
 });
