@@ -1,4 +1,4 @@
-/*! blog - v0.0.1 - 2014-07-05 */
+/*! blog - v0.0.1 - 2014-07-06 */
 'use strict';
 
 var lighter = (function () {
@@ -100,13 +100,13 @@ var lighter = (function () {
 	$.Line = function(text, state) {
         this.text   = text;
         this.state  = state;
-    }
+    };
 
     $.Stream = function(text) {
         this.number = 0;
         this.pos = 0;
         this.lines = this.splitLines(text);
-    }
+    };
 
     $.Stream.EOL = -1;
     $.Stream.EOF = -2;
@@ -137,7 +137,7 @@ var lighter = (function () {
     $.Stream.prototype.pick = function() {
 		if (this.number < this.lines.length) {
 			if (this.pos < this.lines[this.number].length) {
-				return this.lines[this.number][this.pos+1];
+				return this.lines[this.number][this.pos];
 			} else {
 				return $.Stream.EOL;
 			}
@@ -182,6 +182,8 @@ var lighter = (function () {
 
 	};
 
+	$.type = {};
+
 	$.type.inRange = function (num, min, max) {
 		return (num >= min && num <= max);
 	};
@@ -195,7 +197,7 @@ var lighter = (function () {
 	};
 
 	$.type.isWhite = function (c) {
-		return (c != '\t' && c != ' ');
+		return (c === '\t' || c === ' ');
 	}
 
 	return $;
@@ -241,8 +243,7 @@ var lighter = (function () {
 		INSTRING: 15,
 		INMULTICOMMENT: 16,
 		INMULTICOMMENTEND: 17,
-		EOF: 18,
-		DONE: 19
+		DONE: 18
 	};
 
 	var keyValues = {
@@ -263,7 +264,7 @@ var lighter = (function () {
 
 	var scan = function (stream) {
 
-		var tokens 	     = [],
+		var tokens       = [],
 			state        = 0,
 			currentToken = null,
 			buffer       = '',
@@ -272,11 +273,7 @@ var lighter = (function () {
 		while (state !== State.DONE) {
 
 			c = stream.read();
-			save = true;
-
-			if (c === $.Stream.EOF) {
-				state = State.EOF;
-			}
+			var save = true;
 
 			switch (state) {
 				case State.START:
@@ -287,9 +284,8 @@ var lighter = (function () {
 					}else if ($.type.isWhite(c)) {
 						save = false;
 					}else if (c === '{' || c === '}') {
-						save         = false;
 						currentToken = Token.type.BRACKET;
-						state        = State.INBLOCK;
+						state        = State.DONE;
 					}else {
 						switch(c) {
 							case $.Stream.EOF:
@@ -332,15 +328,19 @@ var lighter = (function () {
 							case ']':
 							case ';':
 							case '.':
+								state        = State.DONE;
 								currentToken = Token.type.SIMBOL;
 								break;
 							case '(':
+								state        = State.DONE;
 								currentToken = Token.type.BRACE;
 								break;
 							case ')':
+								state        = State.DONE;
 								currentToken = Token.type.BRACE;
 								break;
 							default:
+								state        = State.DONE;
 								currentToken = Token.type.UNKNOWN;
 								break;
 						}
@@ -516,7 +516,7 @@ var lighter = (function () {
 			if (state == State.DONE) {
 				if (currentToken === Token.type.VAR) {
 					if (buffer in keyValues) {
-						currentToken = Toen.type.KEYS;
+						currentToken = Token.type.KEYS;
 					}
 				}
 				tokens.push({text: buffer, type: currentToken});
@@ -526,15 +526,13 @@ var lighter = (function () {
 				} else {
 					state = State.DONE;
 				}
-
 			}
 		}
 
 		return tokens;
 	};
 
-	$.lexer['javascript'] = function (editor, opt) {
+	$.lexer['javascript'] = scan;
 
-	};
 }(lighter));
 
