@@ -7,24 +7,35 @@
 			window.onload = function () {
 				var code = lighter.code({target:document.querySelector('#area'),language:'javascript'});
 				code.on();
+
+				var on = true;
+				lighter.addEventHandler(document.querySelector('#toggle'), 'click', function(){
+					if (on) {
+						on = false;
+						code.off();
+					}else{
+						on = true;
+						code.on();
+					}
+
+				});
 			}
 		</script>
 		<style type="text/css">
 			#area {
 				width: 500px;
-				height: 500px;
 			}
 		</style>
 	</head>
 	<body>
-		<div id="area">
-			//comment
-			function helloworld() {
-				for (var i = 0; i < 10; i++) {
-					console.log(i);
-				}
-				alert("hello");
-			}
-		</div>
+		<pre><div id="area">//comment
+function helloworld() {
+	for (var i = 0; i < 10; i++) {
+		console.log(i);
+	}
+	alert("hello");
+}</div></pre>
+
+	<button id="toggle">Toggle Highlight</button>
 	</body>
 </html>
