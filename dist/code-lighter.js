@@ -1,4 +1,4 @@
-/*! blog - v0.0.1 - 2014-07-06 */
+/*! blog - v0.0.1 - 2014-07-07 */
 'use strict';
 
 var lighter = (function () {
@@ -74,34 +74,28 @@ var lighter = (function () {
 
 	//start create editor
 
-	$.on = function (opt) {
-		var editor = {
-			target: opt.target,
-			language: opt.language
+	$.code = function (opt) {
+
+		return {
+			code: opt.target.innerHTML,
+			opt: opt,
+			on: function () {
+				var stream      = new $.Stream(this.code),
+					lexer       = $.lexer[this.opt.language],
+					tokens      = lexer.scan(stream),
+					htmlContent = '';
+
+				tokens.forEach(function (token, i) {
+					htmlContent += $.spanStyle(token.text, lexer.map[token.type]);
+				});
+				
+				this.opt.target.innerHTML = htmlContent;
+			},
+			off: function () {
+				this.opt.target.innerHTML = this.code;
+			}
 		};
 
-		var stream = new $.Stream(editor.target.value),
-			lexer = $.lexer[editor.language],
-			displayLayer = document.createElement('div'),
-			tokens = lexer.scan(stream);
-
-		editor.target.parentNode.insertBefore(displayLayer,editor.target);
-
-		var htmlContent = '';
-
-		tokens.forEach(function (token, i) {
-			htmlContent += $.spanStyle(token.text, lexer.map[token.type]);
-		});
-
-		displayLayer.innerHTML = htmlContent;
-
-		$.addEventHandler(editor.target, 'click', function (e) {
-			console.log(e);
-		});
-
-		$.addEventHandler(editor.target, 'keyup', function (e) {
-			console.log(e);
-		});
 	};
 
 	$.Line = function(text, state) {

@@ -5,7 +5,8 @@
 		<script type="text/javascript" src="dist/code-lighter.js"></script>
 		<script type="text/javascript">
 			window.onload = function () {
-				lighter.on({target:document.querySelector('#area'),language:'javascript'});
+				var code = lighter.code({target:document.querySelector('#area'),language:'javascript'});
+				code.on();
 			}
 		</script>
 		<style type="text/css">
@@ -16,7 +17,7 @@
 		</style>
 	</head>
 	<body>
-		<textarea id="area">
+		<div id="area">
 			//comment
 			function helloworld() {
 				for (var i = 0; i < 10; i++) {
@@ -24,6 +25,6 @@
 				}
 				alert("hello");
 			}
-		</textarea>
+		</div>
 	</body>
 </html>
