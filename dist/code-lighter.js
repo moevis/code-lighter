@@ -71,24 +71,41 @@ var lighter = (function () {
 		}
 	}());
 
+	$.addClass = function  (element, classStyle) {
+		// body...
+	};
+
 
 	//start create editor
 
 	$.code = function (opt) {
 
+		/*
+			opt:
+				target: element contains code
+				language: javascript etc.
+				tabSpace: change Tab to spaces. default 4.
+				pre: a bool value indicate wether if the target element is wrapped by <pre> tag.
+		*/
+
+		opt.tabSpace = opt.tabSpace || 4;
+		opt.language = opt.language || 'javascript';
+		opt.pre      = opt.pre || true;
+
 		return {
 			code: opt.target.innerHTML,
 			opt: opt,
 			on: function () {
-				var stream      = new $.Stream(this.code),
+				var stream      = new $.Stream($.unescapeHTML(this.code)),
 					lexer       = $.lexer[this.opt.language],
-					tokens      = lexer.scan(stream),
-					htmlContent = '';
+					tokens      = lexer.scan(stream, this.opt),
+					htmlContent = '',
+					pre			= this.opt.pre;
 
 				tokens.forEach(function (token, i) {
-					htmlContent += $.spanStyle(token.text, lexer.map[token.type]);
+					htmlContent += $.spanStyle(token.text, lexer.map[token.type], pre);
 				});
-				
+
 				this.opt.target.innerHTML = htmlContent;
 			},
 			off: function () {
@@ -175,8 +192,11 @@ var lighter = (function () {
 		return text.split(/\r\n?|\n/g);
 	};
 
-	$.spanStyle = function (text, classStyle) {
-		return (classStyle !== "WHITE")?('<span class="' + classStyle + '">' + $.escapeHTML(text) + '</span>'): ($.escapeHTML(text));
+	$.spanStyle = function (text, classStyle, pre) {
+		if (!pre) {
+			text = $.escapeHTML(text);
+		}
+		return (classStyle !== "WHITE")? '<span class="' + classStyle + '">' + text + '</span>': text;
 	};
 
 	$.prepareLayer = function () {
@@ -206,9 +226,15 @@ var lighter = (function () {
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
 		.replace(/ /g, "&nbsp;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#039;");
+		.replace(/>/g, "&gt;");
+	};
+
+	$.unescapeHTML = function (content) {
+		return content
+		.replace(/&amp;/g, '&')
+		.replace(/&lt;/g, '<')
+		.replace(/&nbsp;/g, ' ')
+		.replace(/&gt;/g, '>');
 	};
 
 	return $;
