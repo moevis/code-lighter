@@ -29,11 +29,18 @@ HTML code
 
 javascript initializing:
 ```
-var code = lighter.code({target:document.querySelector('#area'),language:'javascript'});
+var option = {
+	target: document.querySelector('#area'),	// target element
+	language: 'javascript',
+	tabSpace: 4,					// change a '\t' char to spaces, default is 4 spaces.
+	pre: false					// whether if the code is wrapped by <pre> tag, default is true.
+}
+
+var code = lighter.code();
 ```
 
 Then, Using `code.on()` to highlight the code. Using `code.off()` to disable highlight.
 
-## Lisense
+## License
 
-MIT Lisense
+MIT License
