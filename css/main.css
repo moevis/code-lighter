@@ -1,21 +1,25 @@
-.javascript .eol{
+.javascript .eol {
 	display: block;
 }
 
-.javascript .keys{
+.javascript .keys {
 	color: #1779E4;
 }
 
 
-.javascript .comment{
+.javascript .comment {
 	color: #157921;
 }
 
 
-.javascript .number{
+.javascript .number {
 	color: #026F8A;
 }
 
-.javascript .string{
+.javascript .string {
 	color: #E46D10;
+}
+
+.javascript .keys {
+	font-weight: bold;
 }

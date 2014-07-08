@@ -327,7 +327,6 @@ var lighter = (function () {
 		if         : 0,
 		then       : 0,
 		else       : 0,
-		function   : 0,
 		var        : 0,
 		switch     : 0,
 		case       : 0,
@@ -350,7 +349,8 @@ var lighter = (function () {
 		windows  : Token.type.BUILDINOBJECT,
 		console  : Token.type.BUILDINOBJECT,
 		Math     : Token.type.BUILDINOBJECT,
-		String   : Token.type.BUILDINOBJECT
+		String   : Token.type.BUILDINOBJECT,
+		function : Token.type.BUILDINOBJECT
 	}
 
 	var scan = function (stream, opt) {
@@ -380,7 +380,7 @@ var lighter = (function () {
 				case State.START:
 					if ($.type.isNum(c)) {
 						state = State.INNUM;
-					}else if ($.type.isAlpha(c) || c == '_') {
+					}else if ($.type.isAlpha(c) || c == '_' || c == '$') {
 						state = State.INID;
 					}else if ($.type.isWhite(c)) {
 						state = State.INWHITE;
