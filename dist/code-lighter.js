@@ -1,4 +1,4 @@
-/*! blog - v0.0.1 - 2014-07-07 */
+/*! blog - v0.0.1 - 2014-07-08 */
 'use strict';
 
 var lighter = (function () {
@@ -309,7 +309,11 @@ var lighter = (function () {
 		Date: 0,
 		Math: 0,
 		new: 0,
-		Regex: 0
+		Regex: 0,
+		in: 0,
+		null: 0,
+		typeof: 0,
+		instanceof: 0
 	};
 
 	var scan = function (stream, opt) {
@@ -339,7 +343,7 @@ var lighter = (function () {
 				case State.START:
 					if ($.type.isNum(c)) {
 						state = State.INNUM;
-					}else if ($.type.isAlpha(c)) {
+					}else if ($.type.isAlpha(c) || c == '_') {
 						state = State.INID;
 					}else if ($.type.isWhite(c)) {
 						state = State.INWHITE;
@@ -432,7 +436,7 @@ var lighter = (function () {
 					break;
 
 				case State.INNUM:
-					if (!$.type.isNum(c)) {
+					if (!$.type.isNum(c) && c !== '.') {
 						stream.putBack();
 						save         = false;
 						state        = State.DONE;
@@ -441,7 +445,7 @@ var lighter = (function () {
 					break;
 
 				case State.INID:
-					if (!$.type.isAlpha(c)) {
+					if (!$.type.isAlpha(c) && !$.type.isNum(c) && c!== '_') {
 						stream.putBack();
 						save         = false;
 						state        = State.DONE;
@@ -469,7 +473,7 @@ var lighter = (function () {
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INLESS:
@@ -483,7 +487,7 @@ var lighter = (function () {
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INGEATER:
@@ -497,7 +501,7 @@ var lighter = (function () {
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INPLUS:
@@ -515,7 +519,7 @@ var lighter = (function () {
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INMINUS:
@@ -533,7 +537,7 @@ var lighter = (function () {
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INTIMES:
@@ -547,7 +551,7 @@ var lighter = (function () {
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
 					}
-					save = false;
+
 					break;
 
 				case State.INDIV:
@@ -555,7 +559,6 @@ var lighter = (function () {
 						// divide
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
-						save = false;
 					} else if (c === '/'){
 						state = State.INCOMMENT;
 					} else if (c === '*') {
@@ -565,7 +568,6 @@ var lighter = (function () {
 						stream.putBack();
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
-						save = false;
 					}
 					break;
 
