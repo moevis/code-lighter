@@ -72,16 +72,28 @@ var lighter = (function () {
 	}());
 
 	$.addClass = (function () {
-		if (document.classList) {
+		if (document.documentElement.classList) {
 			return function (el, classStyle) {
 				el.classList.add(classStyle);
 			}
 		}else{
 			return function (el, classStyle) {
 				var c = ' ' + el.className + ' ';
-				if (c.indexOf(classStyle) == -1) {
+				if (c.indexOf(' ' + classStyle + ' ') == -1) {
 					el.className += ' ' + classStyle;
 				}
+			}
+		}
+	}());
+
+	$.removeClass = (function () {
+		if (document.classList) {
+			return function (el, classStyle) {
+				el.classList.remove(classStyle);
+			}
+		}else{
+			return function (el, classStyle) {
+				el.className = el.className.replace('/\b' + classStyle + '\b/g', '');
 			}
 		}
 	}());
@@ -97,10 +109,11 @@ var lighter = (function () {
 				tabSpace: change Tab to spaces. default 4.
 				pre: a bool value indicate wether if the target element is wrapped by <pre> tag.
 		*/
-
 		opt.tabSpace = opt.tabSpace || 4;
 		opt.language = opt.language || 'javascript';
 		opt.pre      = opt.pre || true;
+	
+		$.addClass(opt.target, opt.language);
 
 		return {
 			code: opt.target.innerHTML,
@@ -280,7 +293,7 @@ var lighter = (function () {
 	Token.map = (function(types) {
 		var ret = {};
 		for (var name in types) {
-			ret[types[name]] = name;
+			ret[types[name]] = name.toLowerCase();
 		}
 		return ret;
 	}(Token.type));
@@ -496,6 +509,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// assign
+						save         = false;
 						stream.putBack();
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -510,6 +524,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// less
+						save         = false;
 						stream.putBack();
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -524,6 +539,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// greater
+						save         = false;
 						stream.putBack();
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -542,6 +558,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// plus
+						save         = false;
 						stream.putBack();
 						state        = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -560,6 +577,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// minus
+						save = false;
 						stream.putBack();
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -574,6 +592,7 @@ var lighter = (function () {
 						currentToken = Token.type.OPERATION;
 					} else {
 						// times
+						save = false;
 						stream.putBack();
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;
@@ -592,6 +611,7 @@ var lighter = (function () {
 						state = State.INMULTICOMMENT;
 					} else {
 						// divide
+						save = false;
 						stream.putBack();
 						state = State.DONE;
 						currentToken = Token.type.OPERATION;

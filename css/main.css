@@ -1,21 +1,21 @@
-div .EOL{
+.javascript .eol{
 	display: block;
 }
 
-div .KEYS{
+.javascript .keys{
 	color: #1779E4;
 }
 
 
-div .COMMENT{
+.javascript .comment{
 	color: #157921;
 }
 
 
-div .NUMBER{
+.javascript .number{
 	color: #026F8A;
 }
 
-div .STRING{
+.javascript .string{
 	color: #E46D10;
 }
