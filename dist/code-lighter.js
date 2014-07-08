@@ -308,6 +308,7 @@ var lighter = (function () {
 		while: 0,
 		Date: 0,
 		Math: 0,
+		new: 0,
 		Regex: 0
 	};
 
