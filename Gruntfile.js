@@ -14,7 +14,7 @@ module.exports = function (grunt) {
         dest: './dist/code-lighter.js'
       },
       style: {
-        src: ['./css/*.css'],
+        src: ['./css/main.css', './css/*.css'],
         dest: './dist/code-lighter.css'
       }
     },

@@ -1,16 +1,36 @@
-.javascript .eol {
+.code-lighter {
+	background: black;
+	color: white;
+	font-family:  Consolas, Inconsolata, Monaco, monospace;
+	width: 100%;
+	font-size: 10pt;
+	padding: 0px;
+}
+
+.code-lighter .code{
+	padding: 1em 1em 1em 0em;
+}
+
+.code-lighter .aside{
+	padding: 1em 0.5em 1em 1em;
+	margin-right: 0.5em;
+	float: left;
+	border-right: 1px solid #3C3C3C;
+	background: #242424;
+}
+
+.code-lighter .line-number{
 	display: block;
+	text-align: right;
 }
 
 .javascript .keys {
 	color: rgb(249, 38, 114);
 }
 
-
 .javascript .comment {
 	color: rgb(117, 113, 94);
 }
-
 
 .javascript .number {
 	color: rgb(174, 129, 255);
@@ -26,12 +46,4 @@
 
 .javascript .buildinmethod {
 	color: rgb(102, 217, 239);;
-}
-.code-lighter {
-	background: black;
-	color: white;
-	padding: 1em;
-	font-family:  Consolas, Inconsolata, Monaco, monospace;
-	width: 100%;
-	font-size: 10pt;
 }

@@ -1,16 +1,10 @@
-.javascript .eol {
-	display: block;
-}
-
 .javascript .keys {
 	color: rgb(249, 38, 114);
 }
 
-
 .javascript .comment {
 	color: rgb(117, 113, 94);
 }
-
 
 .javascript .number {
 	color: rgb(174, 129, 255);

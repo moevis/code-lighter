@@ -1,4 +1,4 @@
-/*! code lighter - v0.0.1 - 2014-07-09 */
+/*! code lighter - v0.0.1 - 2014-07-10 */
 'use strict';
 
 var lighter = (function () {
@@ -123,14 +123,15 @@ var lighter = (function () {
 				var stream      = new $.Stream($.unescapeHTML(this.code)),
 					lexer       = $.lexer[this.opt.language],
 					tokens      = lexer.scan(stream, this.opt),
-					htmlContent = '',
+					htmlContent = '<div class="code">',
 					pre			= this.opt.pre;
 
 				tokens.forEach(function (token, i) {
-					htmlContent += $.spanStyle(token.text, lexer.map[token.type], pre);
+					htmlContent += (token.type === $.Stream.EOL)?'<br />':$.spanStyle(token.text, lexer.map[token.type], pre);
 				});
+				this.opt.target.innerHTML = htmlContent + '</div>';
+				$.addLineNumber(this.opt.target, stream.number);
 
-				this.opt.target.innerHTML = htmlContent;
 			},
 			off: function () {
 				this.opt.target.innerHTML = this.code;
@@ -261,6 +262,18 @@ var lighter = (function () {
 		.replace(/&gt;/g, '>');
 	};
 
+	$.addLineNumber = function (target, n) {
+		var html = [];
+		for (var i = 1; i <= n; i++) {
+			html.push('<span class="line-number">' + i + '</span>');
+		}
+		var doc = document.createElement("div");
+		$.addClass(doc, 'aside');
+		doc.innerHTML = html.join("");
+
+		target.insertBefore(doc, target.firstChild);
+	}
+
 	return $;
 
 }());
@@ -310,24 +323,24 @@ var lighter = (function () {
 	var Token = {};
 
 	Token.type = {
-		WHITE         : -1,
-		NUMBER        : 0,
-		BRACKET       : 1,
-		OPERATION     : 2,
-		STRING        : 3,
-		LBRACE        : 4,
-		RBRACE        : 5,
-		SIMBOL        : 6,
-		EOL           : 7,
-		EOF           : 8,
-		VAR           : 9,
-		COMMENT       : 10,
-		KEYS          : 11,
-		BUILDINOBJECT : 12,
-		FUNCTION      : 13,
-		BUILDINMETHOD : 14,
-		DOT           : 15,
-		UNKNOWN       : 16
+		EOF           : -2,  // equal to $.Stream.EOF
+		EOL           : -1,  // equal to $.Stream.EOL ! important
+		BRACKET       : 0,
+		OPERATION     : 1,
+		STRING        : 2,
+		LBRACE        : 3,
+		RBRACE        : 4,
+		SIMBOL        : 5,
+		WHITE         : 6,
+		NUMBER        : 7,
+		VAR           : 8,
+		COMMENT       : 9,
+		KEYS          : 10,
+		BUILDINOBJECT : 11,
+		FUNCTION      : 12,
+		BUILDINMETHOD : 13,
+		DOT           : 14,
+		UNKNOWN       : 15
 	};
 
 	Token.map = (function(types) {
