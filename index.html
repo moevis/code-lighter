@@ -32,11 +32,16 @@ function helloworld() {
 
 	windows.onload = function(){
 		document.write('yes');
-		document.write("n\\"o");
+		document.write("n\"o");
 	}
+	
+	var str = "fs\
+		fds\
+	";
 
-	var k256 = [];
-	k[0] = 5;
+	var k256 = [1, 2, 3, 4];
+
+	k256[0] = 5;
 
 	for (var i = 0; i < 10; i++) {
 		console.log(i);
