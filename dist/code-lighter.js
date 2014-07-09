@@ -1,4 +1,4 @@
-/*! code lighter - v0.0.1 - 2014-07-08 */
+/*! code lighter - v0.0.1 - 2014-07-09 */
 'use strict';
 
 var lighter = (function () {
@@ -75,14 +75,14 @@ var lighter = (function () {
 		if (document.documentElement.classList) {
 			return function (el, classStyle) {
 				el.classList.add(classStyle);
-			}
+			};
 		}else{
 			return function (el, classStyle) {
 				var c = ' ' + el.className + ' ';
 				if (c.indexOf(' ' + classStyle + ' ') == -1) {
 					el.className += ' ' + classStyle;
 				}
-			}
+			};
 		}
 	}());
 
@@ -90,11 +90,11 @@ var lighter = (function () {
 		if (document.classList) {
 			return function (el, classStyle) {
 				el.classList.remove(classStyle);
-			}
+			};
 		}else{
 			return function (el, classStyle) {
-				el.className = el.className.replace('/\b' + classStyle + '\b/g', '');
-			}
+				el.className = el.className.replace('/\\b' + classStyle + '\\b/g', '');
+			};
 		}
 	}());
 
@@ -114,6 +114,7 @@ var lighter = (function () {
 		opt.pre      = opt.pre || true;
 	
 		$.addClass(opt.target, opt.language);
+		$.addClass(opt.target, 'code-lighter');
 
 		return {
 			code: opt.target.innerHTML,
@@ -264,6 +265,40 @@ var lighter = (function () {
 
 }());
 
+'use strict';
+
+(function($) {
+	$.lexer = $.lexer || {};
+	
+	var Token = {};
+
+	Token.type = {
+		WHITE         : -1,
+		TAG           : 0,
+		EOL           : 1,
+		EOF           : 2,
+		COMMENT       : 3,
+		LANGLE        : 4,
+		RANGLE        : 5,
+		ATTRIBUTE     : 6,
+		VALUE         : 7,
+		CLOSETAG      : 8
+	};
+
+	Token.map = (function(types) {
+		var ret = {};
+		for (var name in types) {
+			ret[types[name]] = name.toLowerCase();
+		}
+		return ret;
+	}(Token.type));
+
+	var State = {
+		START: 0,
+		INTAG: 1,
+	};
+
+}(lighter));
 (function($) {
 	$.lexer = $.lexer || {};
 	
@@ -351,7 +386,7 @@ var lighter = (function () {
 		Math     : Token.type.BUILDINOBJECT,
 		String   : Token.type.BUILDINOBJECT,
 		function : Token.type.BUILDINOBJECT
-	}
+	};
 
 	var scan = function (stream, opt) {
 

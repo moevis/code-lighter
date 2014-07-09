@@ -1,0 +1,29 @@
+.javascript .eol {
+	display: block;
+}
+
+.javascript .keys {
+	color: rgb(249, 38, 114);
+}
+
+
+.javascript .comment {
+	color: rgb(117, 113, 94);
+}
+
+
+.javascript .number {
+	color: rgb(174, 129, 255);
+}
+
+.javascript .string {
+	color: rgb(230, 219, 116);
+}
+
+.javascript .operation {
+	color: rgb(249, 38, 114);
+}
+
+.javascript .buildinmethod {
+	color: rgb(102, 217, 239);;
+}

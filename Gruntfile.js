@@ -4,20 +4,28 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
-      options: {
-        separator: '\n',
-        stripBanners: true,
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
-      },
-      dist: {
-        src: ['./lib/main.js', './lib/lexer.js'],
+      scripts: {
+        options: {
+          separator: '\n',
+          stripBanners: true,
+          banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */\n',
+        },
+        src: ['./lib/main.js', './lib/*.js'],
         dest: './dist/code-lighter.js'
+      },
+      style: {
+        src: ['./css/*.css'],
+        dest: './dist/code-lighter.css'
       }
     },
     watch: {
       scripts: {
         files: ['./lib/*.js'],
-        tasks: ['concat']
+        tasks: 'concat:scripts'
+      },
+      style: {
+        files: ['./css/*.css'],
+        tasks: 'concat:style'
       }
     }
   });
@@ -31,5 +39,6 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', ['watch:scripts']);
-  grunt.registerTask('cat', ['concat']);
+  grunt.registerTask('css', ['watch:style']);
+  grunt.registerTask('cat', ['concat:style']);
 };
