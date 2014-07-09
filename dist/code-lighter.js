@@ -296,6 +296,11 @@ var lighter = (function () {
 	var State = {
 		START: 0,
 		INTAG: 1,
+		INATTRIBUTE: 2,
+		INVALUE: 3,
+		INCOMMENT: 4,
+		INCLOSETAG: 5,
+		INDOCTYPE: 6
 	};
 
 }(lighter));
@@ -395,7 +400,8 @@ var lighter = (function () {
 			currentToken = null,
 			buffer       = '',
 			c            = '',
-			tabSpace     = 4;
+			tabSpace     = 4,
+			ignore       = false;
 
 		if (opt !== undefined) {
 			tabSpace = opt.tabSpace;
@@ -494,15 +500,52 @@ var lighter = (function () {
 
 				case State.INSINGLEQUOTATION:
 					if (c === '\'') {
-						state = State.DONE;
-						currentToken = Token.type.STRING;
+						if (!ignore) {
+							state = State.DONE;
+							currentToken = Token.type.STRING;
+						}
+						ignore = false;
+					} else if (c === '\\') {
+						// if c == '\\', we will ignore the meaning of next char
+						if (ignore) {
+							ignore = false;
+						} else {
+							ignore = true;
+						}
+						
+					} else if (c === $.Stream.EOL){
+						c = '\n';
+					} else if (c === $.Stream.EOF) {
+							ignore = false;
+							state = State.DONE;
+							urrentToken = Token.type.STRING;
+							save = false;
+							stream.putBack();
 					}
 					break;
 
 				case State.INQUOTATION:
 					if (c === '"') {
-						state = State.DONE;
-						currentToken = Token.type.STRING;
+						if (!ignore) {
+							state = State.DONE;
+							currentToken = Token.type.STRING;
+						}
+						ignore = false;
+					} else if (c === '\\') {
+						// if c == '\\', we will ignore the meaning of next char
+						if (ignore) {
+							ignore = false;
+						} else {
+							ignore = true;
+						}
+					} else if (c === $.Stream.EOL){
+						c = '\n';
+					} else if (c === $.Stream.EOF) {
+							ignore = false;
+							state = State.DONE;
+							urrentToken = Token.type.STRING;
+							save = false;
+							stream.putBack();
 					}
 					break;
 
