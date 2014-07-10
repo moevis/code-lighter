@@ -1,4 +1,4 @@
-/*! code lighter - v0.0.1 - 2014-07-10 */
+/*! code lighter - v0.0.1 - 2014-07-11 */
 'use strict';
 
 var lighter = (function () {
@@ -191,6 +191,10 @@ var lighter = (function () {
 		}
 	};
 
+	$.Stream.prototype.match = function(matchString) {
+		return (this.lines[this.number].indexOf(matchString, this.pos) === 0);
+	};
+
 	$.Stream.prototype.setLine = function(text, number) {
 		this.lines[number] = text;
 	};
@@ -288,16 +292,19 @@ var lighter = (function () {
 	var Token = {};
 
 	Token.type = {
-		WHITE         : -1,
-		TAG           : 0,
-		EOL           : 1,
-		EOF           : 2,
-		COMMENT       : 3,
-		LANGLE        : 4,
-		RANGLE        : 5,
-		ATTRIBUTE     : 6,
-		VALUE         : 7,
-		CLOSETAG      : 8
+		EOF           : -2,  // equal to $.Stream.EOF
+		EOL           : -1,  // equal to $.Stream.EOL ! important
+		WHITE         : 0,
+		TAG           : 1,
+		COMMENT       : 2,
+		LANGLE        : 3,
+		RANGLE        : 4,
+		ATTRIBUTE     : 5,
+		VALUE         : 6,
+		EQUAL         : 7,
+		NUMBER        : 8,
+		PLAINTEXT     : 9,
+		UNKNOWN       : 10
 	};
 
 	Token.map = (function(types) {
@@ -311,19 +318,29 @@ var lighter = (function () {
 	var State = {
 		START: 0,
 		INTAG: 1,
-		INATTRIBUTE: 2,
-		INVALUE: 3,
-		INCOMMENT: 4,
-		INDOCTYPE: 5,
-		INWHITE: 6,
-		DONE: 7
+		TAGBEGIN: 2,
+		TAGNAME: 3,
+		TAGCLOSE: 4,
+		INATTRIBUTE: 5,
+		INNUM: 6,
+		INQUOTATION: 7,
+		INSINGLEQUOTATION: 8,
+		INCOMMENT: 9,
+		INDOCTYPE: 10,
+		INWHITE: 11,
+		DONE: 12
 	};
 
 	function States(startup) {
 		this.states = [startup];
-	};
+	}
 
 	States.prototype.push = function(state) {
+		this.states.push(state);
+	};
+
+	States.prototype.switch = function(state) {
+		this.states.pop();
 		this.states.push(state);
 	};
 
@@ -335,32 +352,264 @@ var lighter = (function () {
 		return this.states[this.states.length - 1];
 	};
 
+	var COMMENT_START = '<!--';
+
 	var scan = function (stream, opt) {
 		var currentToken = null,
 			tokens       = [],
 			c            = '',
 			buffer       = '',
-			state        = new States(State.START);
+			state        = new States(State.START),
+			tabSpace     = 4,
+			save         = true,
+			saveToken    = false,
+			ignore       = false;
 
-		while (state.top() != State.DONE) {
-			switch (state) {
+		if (opt !== undefined) {
+			tabSpace = opt.tabSpace;
+		}
+
+		var intent = '';
+		for (var i = 0; i < tabSpace; i++) {
+			intent += ' ';
+		}
+
+		function addToken (buffer, token) {
+			tokens.push({text: buffer, type: token});
+			saveToken = false;
+		}
+
+		while (state.top() !== State.DONE) {
+
+			c = stream.read();
+			save = true;
+			switch (state.top()) {
+
 				case State.START:
 					if (c === '<') {
-						state = State.INTAG;
+						var next = stream.pick();
+						if ($.type.isAlpha(next) || next === '_' || next === '$' || next === '/') {
+							// detetmine last char '<' stands for the begin of tag
+							if (buffer.length === 0) {
+								// no plain text in buffer
+								// switch state to TAG BEGIN
+								stream.putBack();
+								save = false;
+								state.push(State.TAGBEGIN);
+							} else {
+							//put back '<', save the plain text first
+								stream.putBack();
+								save         = false;
+								currentToken = Token.type.PLAINTEXT;
+								saveToken    = true;
+							}
+						} else if (stream.match('!--')) {
+							// if it comes '<!--'
+							if (buffer.length === 0) {
+								// no plain text in buffer
+								// switch state to COMMENT BEGIN
+								stream.putBack();
+								save = false;
+								state.push(State.COMMENTBEGIN);
+							} else {
+								stream.putBack();
+								saveToken    = true;
+								currentToken = Token.type.PLAINTEXT;
+								save         = false;
+							}
+						} else if (c === $.Stream.EOF) {
+							saveToken = true;
+							save = false;
+							currentToken = Token.type.UNKNOWN;
+							state.switch(State.DONE);
+						} else {
+							// just nothing, save plain text
+						}
+					} else if (c === $.Stream.EOF) {
+						saveToken = true;
+						save = false;
+						currentToken = Token.type.UNKNOWN;
+						state.switch(State.DONE);
+					} else {
+						// just nothing, save plain text
 					}
 					break;
-				case State.INTAG:
 
+				case State.TAGBEGIN:
+					// c must be '<'
+					if (c === '<') {
+						if (stream.pick() === '/') {
+
+						} else {
+							saveToken    = true;
+							currentToken = Token.type.LANGLE;
+							state.switch(State.TAGNAME);
+						}
+					} else {
+						saveToken    = true;
+						currentToken = Token.type.LANGLE;
+						state.switch(State.TAGNAME);
+					}
+					break;
+
+				case State.TAGNAME:
+					if ($.type.isAlpha(c) || c === '_' || c === '$') {
+
+					} else {
+						// tag name finished
+						save = false;
+						saveToken = true;
+						state.switch(State.INTAG);
+						stream.putBack();
+					}
+					break;
+
+				case State.INTAG:
+					if ($.type.isAlpha(c) || c === '_' || c === '$') {
+						state.push(State.INATTRIBUTE);
+					} else if ($.type.isWhite(c)) {
+						state.push(State.INWHITE);
+					} else if (c === '\'') {
+						state.push(State.INSINGLEQUOTATION);
+					} else if (c === '"') {
+						state.push(State.INQUOTATION);
+					} else if (c === '=') {
+						saveToken = true;
+						currentToken = Token.type.EQUAL;
+					} else if ($.type.isNum(c)) {
+						state.push(State.INNUM);
+					} else if (c === '/') {
+						if (stream.pick() === '>') {
+							save = false;
+							stream.putBack();
+							state.switch(State.TAGCLOSE);
+						} else {
+							saveToken = true;
+							currentToken = Token.type.UNKNOWN;
+						}
+					} else if (c === '>') {
+						save = false;
+						stream.putBack();
+						state.switch(State.TAGCLOSE);
+					} else if (c === $.Stream.EOF) {
+						saveToken = true;
+						save = false;
+						currentToken = Token.type.UNKNOWN;
+						state.switch(State.DONE);
+					} else {
+						saveToken = true;
+						currentToken = Token.type.UNKNOWN;
+					}
+					break;
+
+				case State.INATTRIBUTE:
+					if (!$.type.isAlpha(c) && !$.type.isNum(c) && c!== '_' && c !== '$') {
+						state.pop();
+						stream.putBack();
+						save = false;
+						saveToken = true;
+					}
+					break;
+
+				case State.INWHITE:
+					if (!$.type.isWhite(c)) {
+						stream.putBack();
+						state.pop();
+						save         = false;
+						currentToken = Token.type.WHITE;
+					}
+					break;
+
+				case State.INSINGLEQUOTATION:
+					if (c === '\'') {
+						if (!ignore) {
+							state.pop();
+							saveToken = true;
+							currentToken = Token.type.VALUE;
+						}
+						ignore = false;
+					} else if (c === '\\') {
+						// if c == '\\', we will ignore the meaning of next char
+						if (ignore) {
+							ignore = false;
+						} else {
+							ignore = true;
+						}
+					} else if (c === $.Stream.EOL){
+						c = '\n';
+					} else if (c === $.Stream.EOF) {
+						ignore = false;
+						state.switch(State.DONE);
+						currentToken = Token.type.VALUE;
+						saveToken = true;
+						save = false;
+						stream.putBack();
+					}
+					break;
+
+				case State.INQUOTATION:
+					if (c === '"') {
+						if (!ignore) {
+							state.pop();
+							saveToken = true;
+							currentToken = Token.type.VALUE;
+						}
+						ignore = false;
+					} else if (c === '\\') {
+						// if c == '\\', we will ignore the meaning of next char
+						if (ignore) {
+							ignore = false;
+						} else {
+							ignore = true;
+						}
+					} else if (c === $.Stream.EOL){
+						c = '\n';
+					} else if (c === $.Stream.EOF) {
+						ignore = false;
+						state.switch(State.DONE);
+						currentToken = Token.type.VALUE;
+						saveToken = true;
+						save = false;
+						stream.putBack();
+					}
+					break;
+
+				case State.INNUM:
+					if (!$.type.isNum(c)) {
+						save = false;
+						saveToken = true;
+						currentToken = Token.type.NUMBER;
+						state.pop();
+					}
+					break;
+				case State.TAGCLOSE:
+					if (c === '/') {
+					} else if (c === '>') {
+						saveToken = true;
+						currentToken = Token.type.RANGLE;
+						state.pop();
+					}
+					break;
+				default :
+					//never reaches here;
 			}
 
-			buffer += c;
+			if (save === true) {
+				if (c === '\t') {
+					buffer += intent;
+				} else {
+					buffer += c;
+				}
+			}
 
-			if (state.top() === State.DONE) {
-				tokens.push({text: buffer, type: currentToken.type});
+
+			if (saveToken) {
+				addToken(buffer, currentToken);
 				buffer = '';
-
 			}
 		}
+
+		return tokens;
 	};
 
 	$.lexer['html'] = {
@@ -486,7 +735,7 @@ var lighter = (function () {
 				case State.START:
 					if ($.type.isNum(c)) {
 						state = State.INNUM;
-					}else if ($.type.isAlpha(c) || c == '_' || c == '$') {
+					}else if ($.type.isAlpha(c) || c === '_' || c === '$') {
 						state = State.INID;
 					}else if ($.type.isWhite(c)) {
 						state = State.INWHITE;
@@ -628,7 +877,7 @@ var lighter = (function () {
 					break;
 
 				case State.INID:
-					if (!$.type.isAlpha(c) && !$.type.isNum(c) && c!== '_') {
+					if (!$.type.isAlpha(c) && !$.type.isNum(c) && c!== '_' && c !== '$') {
 						stream.putBack();
 						save         = false;
 						state        = State.DONE;
@@ -800,7 +1049,6 @@ var lighter = (function () {
 				} else {
 					buffer += c;
 				}
-				
 			}
 
 			if (state === State.DONE) {
