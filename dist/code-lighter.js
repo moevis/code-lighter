@@ -87,7 +87,7 @@ var lighter = (function () {
 	}());
 
 	$.removeClass = (function () {
-		if (document.classList) {
+		if (document.documentElement.classList) {
 			return function (el, classStyle) {
 				el.classList.remove(classStyle);
 			};
@@ -113,8 +113,7 @@ var lighter = (function () {
 		opt.language = opt.language || 'javascript';
 		opt.pre      = opt.pre || true;
 	
-		$.addClass(opt.target, opt.language);
-		$.addClass(opt.target, 'code-lighter');
+
 
 		return {
 			code: opt.target.innerHTML,
@@ -131,9 +130,12 @@ var lighter = (function () {
 				});
 				this.opt.target.innerHTML = htmlContent + '</div>';
 				$.addLineNumber(this.opt.target, stream.number);
-
+				$.addClass(this.opt.target, this.opt.language);
+				$.addClass(this.opt.target, 'code-lighter');
 			},
 			off: function () {
+				$.removeClass(this.opt.target, this.opt.language);
+				$.removeClass(this.opt.target, 'code-lighter');
 				this.opt.target.innerHTML = this.code;
 			}
 		};
@@ -221,7 +223,7 @@ var lighter = (function () {
 		if (!pre) {
 			text = $.escapeHTML(text);
 		}
-		return (classStyle !== "WHITE")? '<span class="' + classStyle + '">' + text + '</span>': text;
+		return '<span class="' + classStyle + '">' + text + '</span>';
 	};
 
 	$.prepareLayer = function () {
@@ -312,8 +314,58 @@ var lighter = (function () {
 		INATTRIBUTE: 2,
 		INVALUE: 3,
 		INCOMMENT: 4,
-		INCLOSETAG: 5,
-		INDOCTYPE: 6
+		INDOCTYPE: 5,
+		INWHITE: 6,
+		DONE: 7
+	};
+
+	function States(startup) {
+		this.states = [startup];
+	};
+
+	States.prototype.push = function(state) {
+		this.states.push(state);
+	};
+
+	States.prototype.pop = function() {
+		this.states.pop();
+	};
+
+	States.prototype.top = function() {
+		return this.states[this.states.length - 1];
+	};
+
+	var scan = function (stream, opt) {
+		var currentToken = null,
+			tokens       = [],
+			c            = '',
+			buffer       = '',
+			state        = new States(State.START);
+
+		while (state.top() != State.DONE) {
+			switch (state) {
+				case State.START:
+					if (c === '<') {
+						state = State.INTAG;
+					}
+					break;
+				case State.INTAG:
+
+			}
+
+			buffer += c;
+
+			if (state.top() === State.DONE) {
+				tokens.push({text: buffer, type: currentToken.type});
+				buffer = '';
+
+			}
+		}
+	};
+
+	$.lexer['html'] = {
+		scan: scan,
+		map: Token.map
 	};
 
 }(lighter));
