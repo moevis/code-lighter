@@ -11,7 +11,7 @@ Currently support highlighting for :
 No dependencies for other javascript library. Using token analysing instead of regex matching.
 
 preview
-![alt tag](https://github.com/icymorn/code-lighter/blob/master/preview.png)
+![alt tag](https://raw.githubusercontent.com/icymorn/code-lighter/master/preview.png)
 
 ## Simple usage
 
