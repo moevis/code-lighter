@@ -6,8 +6,12 @@ This is an extremely lightweight tool for code heighlighting.
 Currently support highlighting for :
 
 * javascript
+* html
 
 No dependencies for other javascript library. Using token analysing instead of regex matching.
+
+preview
+![alt tag](https://github.com/icymorn/code-lighter/blob/master/preview.png)
 
 ## Simple usage
 
@@ -33,7 +37,7 @@ var option = {
 	target: document.querySelector('#area'),	// target element
 	language: 'javascript',
 	tabSpace: 4,					// change a '\t' char to spaces, default is 4 spaces.
-	pre: false					// whether if the code is wrapped by <pre> tag, default is true.
+	lineNumber: true				// add line number to the code
 }
 
 var code = lighter.code();
