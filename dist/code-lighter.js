@@ -107,13 +107,13 @@ var lighter = (function () {
 				target: element contains code
 				language: javascript etc.
 				tabSpace: change Tab to spaces. default 4.
-				pre: a bool value indicate wether if the target element is wrapped by <pre> tag.
+				pre: a bool value indicate whether if the target element is wrapped by <pre> tag.
+				lineNumber: determine whether to show line number
 		*/
-		opt.tabSpace = opt.tabSpace || 4;
-		opt.language = opt.language || 'javascript';
-		opt.pre      = opt.pre || true;
-	
-
+		opt.tabSpace   = opt.tabSpace || 4;
+		opt.language   = opt.language || 'javascript';
+		opt.pre        = opt.pre || true;
+		opt.lineNumber = opt.lineNumber || true
 
 		return {
 			code: opt.target.innerHTML,
@@ -129,7 +129,9 @@ var lighter = (function () {
 					htmlContent += (token.type === $.Stream.EOL)?'<br />':$.spanStyle(token.text, lexer.map[token.type], pre);
 				});
 				this.opt.target.innerHTML = htmlContent + '</div>';
-				$.addLineNumber(this.opt.target, stream.number);
+				if (this.opt.lineNumber) {
+					$.addLineNumber(this.opt.target, stream.number);
+				}
 				$.addClass(this.opt.target, this.opt.language);
 				$.addClass(this.opt.target, 'code-lighter');
 			},
@@ -224,10 +226,10 @@ var lighter = (function () {
 	};
 
 	$.spanStyle = function (text, classStyle, pre) {
-		if (!pre) {
-			text = $.escapeHTML(text);
-		}
-		return '<span class="' + classStyle + '">' + text + '</span>';
+		// if (!pre) {
+		// 	text = $.escapeHTML(text);
+		// }
+		return '<span class="' + classStyle + '">' + $.escapeHTML(text) + '</span>';
 	};
 
 	$.prepareLayer = function () {
@@ -425,6 +427,18 @@ var lighter = (function () {
 						} else {
 							// just nothing, save plain text
 						}
+					} else if (c === $.Stream.EOL) {
+						if (buffer.length === 0) {
+							// no plain text in buffer
+							currentToken = Token.type.EOL;
+							saveToken = true;
+							save = false;
+						} else {
+							stream.putBack();
+							saveToken    = true;
+							currentToken = Token.type.PLAINTEXT;
+							save         = false;
+						}
 					} else if (c === $.Stream.EOF) {
 						saveToken = true;
 						save = false;
@@ -459,6 +473,7 @@ var lighter = (function () {
 						// tag name finished
 						save = false;
 						saveToken = true;
+						currentToken = Token.type.TAG;
 						state.switch(State.INTAG);
 						stream.putBack();
 					}
@@ -508,6 +523,7 @@ var lighter = (function () {
 						stream.putBack();
 						save = false;
 						saveToken = true;
+						currentToken = Token.type.ATTRIBUTE;
 					}
 					break;
 

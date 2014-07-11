@@ -6,16 +6,20 @@
 		<script type="text/javascript">
 			window.onload = function () {
 				var code = lighter.code({target:document.querySelector('#htmlarea'),language:'html'});
+				var code2 = lighter.code({target:document.querySelector('#area'),language:'javascript'});
 				code.on();
+				code2.on();
 
 				var on = true;
 				lighter.addEventHandler(document.querySelector('#toggle'), 'click', function(){
 					if (on) {
 						on = false;
 						code.off();
+						code2.off();
 					}else{
 						on = true;
 						code.on();
+						code2.on();
 					}
 
 				});
@@ -49,7 +53,7 @@ function helloworld() {
 	alert("he\"llo");
 }</div></pre>
 <pre><div id="htmlarea">
-	<span he='fe' jk=3>fsdfd</span>
+	&lt;span&nbsp;he="fe"&nbsp;jk="3"&gt;fsdfd&lt;/span&gt;
 </div></pre>
 
 	<button id="toggle">Toggle Highlight</button>
