@@ -328,9 +328,11 @@ var lighter = (function () {
 		INQUOTATION: 7,
 		INSINGLEQUOTATION: 8,
 		INCOMMENT: 9,
-		INDOCTYPE: 10,
-		INWHITE: 11,
-		DONE: 12
+		COMMENTBEGIN: 10,
+		COMMENTEND: 11,
+		INDOCTYPE: 12,
+		INWHITE: 13,
+		DONE: 14
 	};
 
 	function States(startup) {
@@ -353,8 +355,6 @@ var lighter = (function () {
 	States.prototype.top = function() {
 		return this.states[this.states.length - 1];
 	};
-
-	var COMMENT_START = '<!--';
 
 	var scan = function (stream, opt) {
 		var currentToken = null,
@@ -598,6 +598,7 @@ var lighter = (function () {
 						state.pop();
 					}
 					break;
+
 				case State.TAGCLOSE:
 					if (c === '/') {
 					} else if (c === '>') {
@@ -606,6 +607,34 @@ var lighter = (function () {
 						state.pop();
 					}
 					break;
+
+				case State.COMMENTBEGIN:
+					if (buffer.length === 4) {
+						state.switch(State.INCOMMENT);
+					}
+					break;
+
+				case State.INCOMMENT:
+					if (c === '-') {
+						if (stream.match('->')) {
+							state.switch(State.COMMENTEND);
+							save = false;
+							stream.putBack();
+						}
+					} else if (c === $.Stream.EOF) {
+						state.switch(State.DONE);
+						save = false;
+						saveToken = true;
+						currentToken = Token.type.COMMENT;
+					}
+					break;
+
+				case State.COMMENTEND:
+					if (c === '>') {
+						state.pop();
+						saveToken = true;
+						currentToken = Token.type.COMMENT;
+					}
 				default :
 					//never reaches here;
 			}
