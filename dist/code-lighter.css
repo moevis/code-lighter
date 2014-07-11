@@ -24,6 +24,29 @@
 	text-align: right;
 }
 
+.html .keys {
+	color: rgb(249, 38, 114);
+}
+
+.html .comment {
+	color: rgb(117, 113, 94);
+}
+
+.html .number {
+	color: rgb(174, 129, 255);
+}
+
+.html .value {
+	color: rgb(230, 219, 116);
+}
+
+.html .equal {
+	color: rgb(249, 38, 114);
+}
+
+.html .tag {
+	color: rgb(249, 38, 114);
+}
 .javascript .keys {
 	color: rgb(249, 38, 114);
 }
@@ -45,5 +68,5 @@
 }
 
 .javascript .buildinmethod {
-	color: rgb(102, 217, 239);;
+	color: rgb(102, 217, 239);
 }
