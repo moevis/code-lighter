@@ -4,11 +4,11 @@
 	font-family:  Consolas, Inconsolata, Monaco, monospace;
 	width: 100%;
 	font-size: 10pt;
-	padding: 0px;
+	padding: 0;
 }
 
 .code-lighter .code{
-	padding: 1em 1em 1em 0em;
+	padding: 1em 1em 1em 0;
 }
 
 .code-lighter .aside{
@@ -22,4 +22,5 @@
 .code-lighter .line-number{
 	display: block;
 	text-align: right;
+	color: #ccc;
 }

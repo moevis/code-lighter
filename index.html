@@ -45,11 +45,19 @@ function helloworld() {
 
 	var k256 = [1, 2, 3, 4];
 
-	k256[0] = 5;
-
 	for (var i = 0; i < 10; i++) {
 		console.log(i);
 	}
+
+	(function(){
+		console.log('hello world');
+		/*
+		* this is block comment
+		*
+		* a new line
+		*/
+	}());
+
 	alert("he\"llo");
 }</div></pre>
 <pre><div id="htmlarea">&lt;span&nbsp;class='welcome'&gt;hi&lt;/span&gt;

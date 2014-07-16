@@ -1,4 +1,4 @@
-/*! code lighter - v0.0.1 - 2014-07-11 */
+/*! code lighter - v0.0.1 - 2014-07-17 */
 'use strict';
 
 var lighter = (function () {
@@ -1069,11 +1069,13 @@ var lighter = (function () {
 						if (stream.pick() === '/') {
 							state = State.INMULTICOMMENTEND;
 						}
-					} else if (c === State.EOL) {
+					} else if (c === $.Stream.EOL) {
 						if (stream.pick() === $.Stream.EOF) {
 							state = State.DONE;
 							save = false;
 							stream.putBack();
+						} else {
+							c = '\n';
 						}
 					}
 					break;
