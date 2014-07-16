@@ -5,8 +5,8 @@
 		<script type="text/javascript" src="dist/code-lighter.js"></script>
 		<script type="text/javascript">
 			window.onload = function () {
-				var code = lighter.code({target:document.querySelector('#htmlarea'),language:'html'});
-				var code2 = lighter.code({target:document.querySelector('#area'),language:'javascript'});
+				var code = lighter.code({target: document.getElementById('htmlarea'), language:'html', style: 'dark'});
+				var code2 = lighter.code({target: document.getElementById('area'), language:'javascript', style: 'light'});
 				code.on();
 				code2.on();
 

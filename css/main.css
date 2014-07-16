@@ -15,12 +15,34 @@
 	padding: 1em 0.5em 1em 1em;
 	margin-right: 0.5em;
 	float: left;
-	border-right: 1px solid #3C3C3C;
-	background: #242424;
 }
 
 .code-lighter .line-number{
 	display: block;
 	text-align: right;
+}
+
+.code-lighter.dark {
+	background: black;
+	color: white;
+}
+
+
+.code-lighter.dark .aside{
+	border-right: 1px solid #3C3C3C;
+	background: #242424;
 	color: #ccc;
+}
+
+
+.code-lighter.light {
+	border: 1px solid #eee;
+	background: rgb(248, 248, 248);
+	color: rgb(83, 83, 83);
+}
+
+.code-lighter.light .aside{
+	border-right: 1px solid #aaa;
+	background: rgb(255, 255, 255);
+	color: rgb(162, 162, 162);
 }

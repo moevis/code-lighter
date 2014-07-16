@@ -113,7 +113,8 @@ var lighter = (function () {
 		opt.tabSpace   = opt.tabSpace || 4;
 		opt.language   = opt.language || 'javascript';
 		opt.pre        = opt.pre || true;
-		opt.lineNumber = opt.lineNumber || true
+		opt.lineNumber = opt.lineNumber || true;
+		opt.style      = opt.style || 'dark';
 
 		return {
 			code: opt.target.innerHTML,
@@ -132,7 +133,9 @@ var lighter = (function () {
 				if (this.opt.lineNumber) {
 					$.addLineNumber(this.opt.target, stream.number);
 				}
-				$.addClass(this.opt.target, this.opt.language);
+				var code = $.classStyle('code', this.opt.target)[0];
+				$.addClass(code, this.opt.language);
+				$.addClass(this.opt.target, this.opt.style);
 				$.addClass(this.opt.target, 'code-lighter');
 			},
 			off: function () {
@@ -280,7 +283,31 @@ var lighter = (function () {
 		doc.innerHTML = html.join("");
 
 		target.insertBefore(doc, target.firstChild);
-	}
+	};
+
+	$.classStyle = (function() {
+		if (document.getElementsByClass) {
+			return function(classStyle, scope) {
+				var dom = scope || document;
+				return dom.getElementsByClass(classStyle);
+			};
+		} else if (document.querySelector) {
+			return function(classStyle, scope) {
+				var dom = scope || document;
+				return document.querySelectorAll('.' + classStyle);
+			};
+		} else return function(classStyle, scope) {
+			var result = [],
+				dom = scope || document,
+				elements = dom.getElementsByTagName('*');
+			for (var i = 0, len = elements.length; i < len; i++) {
+				if ((' ' + elements[i].className + ' ').indexOf(classStyle) !== -1) {
+					result.push(elements[i]);
+				}
+			}
+			return result;
+		};
+	}());
 
 	return $;
 

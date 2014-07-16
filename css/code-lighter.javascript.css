@@ -1,23 +1,43 @@
-.javascript .keys {
+.dark .javascript .keys {
 	color: rgb(249, 38, 114);
 }
 
-.javascript .comment {
+.dark .javascript .comment {
 	color: rgb(117, 113, 94);
 }
 
-.javascript .number {
+.dark .javascript .number {
 	color: rgb(174, 129, 255);
 }
 
-.javascript .string {
+.dark .javascript .string {
 	color: rgb(230, 219, 116);
 }
 
-.javascript .operation {
+.dark .javascript .operation {
 	color: rgb(249, 38, 114);
 }
 
-.javascript .buildinmethod {
+.dark .javascript .buildinmethod {
 	color: rgb(102, 217, 239);
+}
+
+.light .javascript .keys {
+	color: rgb(68, 111, 189);
+}
+
+.light .javascript .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .javascript .string {
+	color: rgb(241, 137, 0);
+}
+
+.light .javascript .operation {
+	color: rgb(115, 141, 0);
+}
+
+.light .javascript .buildinmethod {
+	color: rgb(115, 141, 0);
 }
