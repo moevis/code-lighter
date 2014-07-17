@@ -7,9 +7,11 @@
 			window.onload = function () {
 				//comment
 				var code = lighter.code({target: document.getElementById('htmlarea'), language:'html', style: 'light'});
-				var code2 = lighter.code({target: document.getElementById('area'), language:'javascript', style: 'light'});
+				var code2 = lighter.code({target: document.getElementById('javascriptarea'), language:'javascript', style: 'light'});
+				var code3 = lighter.code({target: document.getElementById('cssarea'), language:'css', style: 'light'});
 				code.on();
 				code2.on();
+				code3.on();
 
 				var on = true;
 				lighter.addEventHandler(document.getElementById('toggle'), 'click', function(){
@@ -17,10 +19,12 @@
 						on = false;
 						code.off();
 						code2.off();
+						code3.off();
 					}else{
 						on = true;
 						code.on();
 						code2.on();
+						code3.on();
 					}
 
 				});
@@ -28,7 +32,15 @@
 		</script>
 	</head>
 	<body>
-		<pre><div id="area">//comment
+<pre><div id="cssarea">#hi, tagname{
+		background: #eee;
+	}</div></pre>
+<pre><div id="htmlarea">&lt;span&nbsp;class='welcome'&gt;hi&lt;/span&gt;
+	&lt;!--&nbsp;ok&nbsp;--&gt;
+	&lt;script&nbsp;type='text/javascript'&gt;&lt;/script&gt;
+	&lt;!-- half comment</div></pre>
+
+		<pre><div id="javascriptarea">//comment
 function helloworld() {
 
 	var x = 1.5 + 6;
@@ -61,11 +73,8 @@ function helloworld() {
 	}());
 
 	alert("he\"llo");
-}</div></pre>
-<pre><div id="htmlarea">&lt;span&nbsp;class='welcome'&gt;hi&lt;/span&gt;
-	&lt;!--&nbsp;ok&nbsp;--&gt;
-	&lt;script&nbsp;type='text/javascript'&gt;&lt;/script&gt;
-	&lt;!-- half comment</div></pre>
+}
+</div></pre>
 
 	<button id="toggle">Toggle Highlight</button>
 	</body>
