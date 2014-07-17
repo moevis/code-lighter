@@ -340,6 +340,7 @@ var lighter = (function () {
 
 }());
 
+
 'use strict';
 
 (function($) {
