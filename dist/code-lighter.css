@@ -46,28 +46,48 @@
 	background: rgb(255, 255, 255);
 	color: rgb(162, 162, 162);
 }
-.html .attribute {
+.dark .html .attribute {
 	color: rgb(166, 226, 46);
 }
 
-.html .comment {
+.dark .html .comment {
 	color: rgb(117, 113, 94);
 }
 
-.html .number {
+.dark .html .number {
 	color: rgb(174, 129, 255);
 }
 
-.html .value {
+.dark .html .value {
 	color: rgb(230, 219, 116);
 }
 
-.html .equal {
+.dark .html .equal {
 	color: rgb(249, 38, 114);
 }
 
-.html .tag {
+.dark .html .tag {
 	color: rgb(249, 38, 114);
+}
+
+.light .html .attribute {
+	color: rgb(115, 141, 0);
+}
+
+.light .html .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .html .number {
+	color: rgb(174, 129, 255);
+}
+
+.light .html .value {
+	color: rgb(241, 137, 0);
+}
+
+.light .html .tag {
+	color: rgb(68, 111, 189);
 }
 .dark .javascript .keys {
 	color: rgb(249, 38, 114);
@@ -94,6 +114,10 @@
 }
 
 .light .javascript .keys {
+	color: rgb(68, 111, 189);
+}
+
+.light .javascript .function {
 	color: rgb(68, 111, 189);
 }
 

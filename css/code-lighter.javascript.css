@@ -26,6 +26,10 @@
 	color: rgb(68, 111, 189);
 }
 
+.light .javascript .function {
+	color: rgb(68, 111, 189);
+}
+
 .light .javascript .comment {
 	color: rgb(162, 162, 162);
 }

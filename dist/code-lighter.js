@@ -1,4 +1,4 @@
-/*! code lighter - v0.0.1 - 2014-07-17 */
+/*! code-lighter - v0.0.1 - 2014-07-17 */
 'use strict';
 
 var lighter = (function () {
@@ -93,7 +93,7 @@ var lighter = (function () {
 			};
 		}else{
 			return function (el, classStyle) {
-				el.className = el.className.replace('/\\b' + classStyle + '\\b/g', '');
+				el.className = el.className.replace(new RegExp('\\b' + classStyle + '\\b','g'), '');
 			};
 		}
 	}());
@@ -126,9 +126,10 @@ var lighter = (function () {
 					htmlContent = '<div class="code">',
 					pre			= this.opt.pre;
 
-				tokens.forEach(function (token, i) {
+				for (var i = 0, len = tokens.length; i < len; i++) {
+					var token = tokens[i];
 					htmlContent += (token.type === $.Stream.EOL)?'<br />':$.spanStyle(token.text, lexer.map[token.type], pre);
-				});
+				};
 				this.opt.target.innerHTML = htmlContent + '</div>';
 				if (this.opt.lineNumber) {
 					$.addLineNumber(this.opt.target, stream.number);
@@ -139,9 +140,15 @@ var lighter = (function () {
 				$.addClass(this.opt.target, 'code-lighter');
 			},
 			off: function () {
-				$.removeClass(this.opt.target, this.opt.language);
+				$.removeClass(this.opt.target, this.opt.style);
 				$.removeClass(this.opt.target, 'code-lighter');
-				this.opt.target.innerHTML = this.code;
+				// for ie6/7/8, line breaks '\n' will be ignored so there will be only one line
+				var t = document.createElement('div');
+				t.innerHTML = '\n';
+
+				//if ( t.innerHTML === '\n' ){
+				    this.opt.target.innerHTML = this.code;
+				//}
 			}
 		};
 
@@ -164,7 +171,7 @@ var lighter = (function () {
     $.Stream.prototype.read = function() {
         if (this.number < this.lines.length) {
             if (this.pos < this.lines[this.number].length) {
-                return this.lines[this.number][this.pos++];
+                return this.lines[this.number].charAt(this.pos++);
             } else {
                 // reset to line start and move to next line
                 this.pos = 0;
@@ -187,7 +194,7 @@ var lighter = (function () {
     $.Stream.prototype.pick = function() {
 		if (this.number < this.lines.length) {
 			if (this.pos < this.lines[this.number].length) {
-				return this.lines[this.number][this.pos];
+				return this.lines[this.number].charAt(this.pos);
 			} else {
 				return $.Stream.EOL;
 			}
@@ -224,9 +231,29 @@ var lighter = (function () {
 		
 	};
 
-	$.Stream.prototype.splitLines = function (text) {
-		return text.split(/\r\n?|\n/g);
-	};
+	$.Stream.prototype.splitLines = (function(){
+		return ('\n\nb'.split(/\n/).length != 3)? function(string) {
+		    var pos = 0, result = [], l = string.length;
+			while (pos <= l) {
+				var nl = string.indexOf('\n', pos);
+				if (nl == -1) {
+					nl = string.length;
+				}
+				var line = string.slice(pos, string.charAt(nl - 1) == '\r' ? nl - 1 : nl);
+				var rt = line.indexOf('\r');
+				if (rt != -1) {
+					result.push(line.slice(0, rt));
+					pos += rt + 1;
+				} else {
+					result.push(line);
+					pos = nl + 1;
+				}
+			}
+    		return result;
+    	} : function(string){
+    		return string.split(/\r\n?|\n/);
+    	};
+    }());
 
 	$.spanStyle = function (text, classStyle, pre) {
 		// if (!pre) {
@@ -294,7 +321,7 @@ var lighter = (function () {
 		} else if (document.querySelector) {
 			return function(classStyle, scope) {
 				var dom = scope || document;
-				return document.querySelectorAll('.' + classStyle);
+				return dom.querySelectorAll('.' + classStyle);
 			};
 		} else return function(classStyle, scope) {
 			var result = [],
@@ -370,7 +397,7 @@ var lighter = (function () {
 		this.states.push(state);
 	};
 
-	States.prototype.switch = function(state) {
+	States.prototype.change = function(state) {
 		this.states.pop();
 		this.states.push(state);
 	};
@@ -450,7 +477,7 @@ var lighter = (function () {
 							saveToken = true;
 							save = false;
 							currentToken = Token.type.UNKNOWN;
-							state.switch(State.DONE);
+							state.change(State.DONE);
 						} else {
 							// just nothing, save plain text
 						}
@@ -470,7 +497,7 @@ var lighter = (function () {
 						saveToken = true;
 						save = false;
 						currentToken = Token.type.UNKNOWN;
-						state.switch(State.DONE);
+						state.change(State.DONE);
 					} else {
 						// just nothing, save plain text
 					}
@@ -484,12 +511,12 @@ var lighter = (function () {
 						} else {
 							saveToken    = true;
 							currentToken = Token.type.LANGLE;
-							state.switch(State.TAGNAME);
+							state.change(State.TAGNAME);
 						}
 					} else {
 						saveToken    = true;
 						currentToken = Token.type.LANGLE;
-						state.switch(State.TAGNAME);
+						state.change(State.TAGNAME);
 					}
 					break;
 
@@ -501,7 +528,7 @@ var lighter = (function () {
 						save = false;
 						saveToken = true;
 						currentToken = Token.type.TAG;
-						state.switch(State.INTAG);
+						state.change(State.INTAG);
 						stream.putBack();
 					}
 					break;
@@ -524,7 +551,7 @@ var lighter = (function () {
 						if (stream.pick() === '>') {
 							save = false;
 							stream.putBack();
-							state.switch(State.TAGCLOSE);
+							state.change(State.TAGCLOSE);
 						} else {
 							saveToken = true;
 							currentToken = Token.type.UNKNOWN;
@@ -532,12 +559,12 @@ var lighter = (function () {
 					} else if (c === '>') {
 						save = false;
 						stream.putBack();
-						state.switch(State.TAGCLOSE);
+						state.change(State.TAGCLOSE);
 					} else if (c === $.Stream.EOF) {
 						saveToken = true;
 						save = false;
 						currentToken = Token.type.UNKNOWN;
-						state.switch(State.DONE);
+						state.change(State.DONE);
 					} else {
 						saveToken = true;
 						currentToken = Token.type.UNKNOWN;
@@ -582,7 +609,7 @@ var lighter = (function () {
 						c = '\n';
 					} else if (c === $.Stream.EOF) {
 						ignore = false;
-						state.switch(State.DONE);
+						state.change(State.DONE);
 						currentToken = Token.type.VALUE;
 						saveToken = true;
 						save = false;
@@ -609,7 +636,7 @@ var lighter = (function () {
 						c = '\n';
 					} else if (c === $.Stream.EOF) {
 						ignore = false;
-						state.switch(State.DONE);
+						state.change(State.DONE);
 						currentToken = Token.type.VALUE;
 						saveToken = true;
 						save = false;
@@ -637,19 +664,19 @@ var lighter = (function () {
 
 				case State.COMMENTBEGIN:
 					if (buffer.length === 4) {
-						state.switch(State.INCOMMENT);
+						state.change(State.INCOMMENT);
 					}
 					break;
 
 				case State.INCOMMENT:
 					if (c === '-') {
 						if (stream.match('->')) {
-							state.switch(State.COMMENTEND);
+							state.change(State.COMMENTEND);
 							save = false;
 							stream.putBack();
 						}
 					} else if (c === $.Stream.EOF) {
-						state.switch(State.DONE);
+						state.change(State.DONE);
 						save = false;
 						saveToken = true;
 						currentToken = Token.type.COMMENT;
@@ -750,33 +777,33 @@ var lighter = (function () {
 	};
 
 	var keyValues = {
-		if         : 0,
-		then       : 0,
-		else       : 0,
-		var        : 0,
-		switch     : 0,
-		case       : 0,
-		return     : 0,
-		do         : 0,
-		while      : 0,
-		new        : 0,
-		try        : 0,
-		in         : 0,
-		null       : 0,
-		typeof     : 0,
-		instanceof : 0,
-		prototype  : 0,
+		'if'         : 0,
+		'then'       : 0,
+		'else'       : 0,
+		'var'        : 0,
+		'switch'     : 0,
+		'case'       : 0,
+		'return'     : 0,
+		'do'         : 0,
+		'while'      : 0,
+		'new'        : 0,
+		'try'        : 0,
+		'in'         : 0,
+		'null'       : 0,
+		'typeof'     : 0,
+		'instanceof' : 0,
+		'prototype'  : 0
 	};
 
 	var buildInObject = {
-		Date     : Token.type.BUILDINOBJECT,
-		Regex    : Token.type.BUILDINOBJECT,
-		document : Token.type.BUILDINOBJECT,
-		windows  : Token.type.BUILDINOBJECT,
-		console  : Token.type.BUILDINOBJECT,
-		Math     : Token.type.BUILDINOBJECT,
-		String   : Token.type.BUILDINOBJECT,
-		function : Token.type.BUILDINOBJECT
+		'Date'     : Token.type.BUILDINOBJECT,
+		'Regex'    : Token.type.BUILDINOBJECT,
+		'document' : Token.type.BUILDINOBJECT,
+		'windows'  : Token.type.BUILDINOBJECT,
+		'console'  : Token.type.BUILDINOBJECT,
+		'Math'     : Token.type.BUILDINOBJECT,
+		'String'   : Token.type.BUILDINOBJECT,
+		'function' : Token.type.BUILDINOBJECT
 	};
 
 	var scan = function (stream, opt) {
@@ -1139,7 +1166,7 @@ var lighter = (function () {
 					}
 				} else if (currentToken === Token.type.LBRACE) {
 					if (tokens.length > 0) {
-						if (tokens[tokens.length - 1].type === Token.type.KEYS) {
+						if (tokens[tokens.length - 1].type === Token.type.VAR) {
 							tokens[tokens.length - 1].type = Token.type.FUNCTION;
 						}
 					}

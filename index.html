@@ -5,13 +5,14 @@
 		<script type="text/javascript" src="dist/code-lighter.js"></script>
 		<script type="text/javascript">
 			window.onload = function () {
-				var code = lighter.code({target: document.getElementById('htmlarea'), language:'html', style: 'dark'});
+				//comment
+				var code = lighter.code({target: document.getElementById('htmlarea'), language:'html', style: 'light'});
 				var code2 = lighter.code({target: document.getElementById('area'), language:'javascript', style: 'light'});
 				code.on();
 				code2.on();
 
 				var on = true;
-				lighter.addEventHandler(document.querySelector('#toggle'), 'click', function(){
+				lighter.addEventHandler(document.getElementById('toggle'), 'click', function(){
 					if (on) {
 						on = false;
 						code.off();
@@ -29,6 +30,7 @@
 	<body>
 		<pre><div id="area">//comment
 function helloworld() {
+
 	var x = 1.5 + 6;
 	if (x > 5) {
 		alert("x:" + x);
