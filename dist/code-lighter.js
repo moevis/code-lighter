@@ -204,7 +204,7 @@ var lighter = (function () {
 	};
 
 	$.Stream.prototype.match = function(matchString) {
-		return (this.lines[this.number].indexOf(matchString, this.pos) === 0);
+		return this.lines[this.number].indexOf(matchString,this.pos) === this.pos;
 	};
 
 	$.Stream.prototype.setLine = function(text, number) {
@@ -383,7 +383,7 @@ var lighter = (function () {
 		INBRACKET: 10,
 		INBRACE: 11,
 		INWHITE: 12,
-		INVALUE: 13,
+		INVALUEAREA: 13,
 		INPROPERTYVALUE: 14,
 		INUNIT: 15,
 		DONE: 16
@@ -403,11 +403,15 @@ var lighter = (function () {
 	};
 
 	States.prototype.pop = function() {
-		this.states.pop();
+		return this.states.pop();
 	};
 
 	States.prototype.top = function() {
 		return this.states[this.states.length - 1];
+	};
+
+	States.prototype.popUntil = function(state) {
+		while (this.pop() !== state) {}
 	};
 
 	var scan = function (stream, opt) {
@@ -466,8 +470,8 @@ var lighter = (function () {
 					}else if (c === $.Stream.EOF) {
 						putBack();
 						state.change(State.DONE);
-					} else if (c === '<'){
-						if (stream.match('!--')) {
+					} else if (c === '/') {
+						if (stream.pick() === '*') {
 							state.push(State.INCOMMENT);
 						} else {
 							saveToken(Token.type.UNKNOWN);
@@ -501,8 +505,8 @@ var lighter = (function () {
 						state.push(State.INWHITE);
 					} else if ($.type.isAlpha(c) || c === '-') {
 						state.push(State.INPROPERTY);
-					} else if (c === '<') {
-						if (stream.match('!--')) {
+					} else if (c === '/') {
+						if (stream.pick() === '*') {
 							state.push(State.INCOMMENT);
 						} else {
 							saveToken(Token.type.UNKNOWN);
@@ -531,39 +535,40 @@ var lighter = (function () {
 					if ($.type.isWhite(c)) {
 						state.push(State.INWHITE);
 					} else if (c === ':') {
-						state.push(State.INVALUE);
-					} else if (c === '<') {
-						if (stream.match('!--')) {
+						saveToken(Token.type.SIMBOL);
+						state.change(State.INVALUEAREA);
+					} else if (c === '/') {
+						if (stream.pick() === '*') {
 							state.push(State.INCOMMENT);
 						} else {
 							saveToken(Token.type.UNKNOWN);
 						}
+					} else if (c === ';') {
+						state.pop();
+						saveToken(Token.type.SIMBOL);
 					} else if (c === '}') {
 						saveToken(Token.type.SIMBOL);
-						state.pop();
-						state.pop();
+						state.popUntil(State.INBRACKET);
 					} else {
 						saveToken(Token.type.UNKNOWN);
 					}
 					break;
 
-				case State.INVALUE:
+				case State.INVALUEAREA:
 					if ($.type.isWhite(c)) {
 						state.push(State.INWHITE);
 					} else if (c === ';') {
 						state.pop();
-						state.pop();
 						saveToken(Token.type.SIMBOL);
 					} else if ($.type.isNum(c) || c === '.') {
 						state.push(State.INNUM);
-					} else if ($.type.isAlpha(c)) {
+					} else if ($.type.isAlpha(c) || c === '#') {
 						state.push(State.INPROPERTYVALUE);
 					} else if (c === '}') {
-						state.pop();
-						state.pop();
+						state.popUntil(State.INBRACKET);
 						saveToken(Token.type.SIMBOL);
-					} else if (c === '<') {
-						if (stream.match('!--')) {
+					} else if (c === '/') {
+						if (stream.pick() === '*') {
 							state.push(State.INCOMMENT);
 						} else {
 							saveToken(Token.type.UNKNOWN);
@@ -575,6 +580,8 @@ var lighter = (function () {
 						state.push(State.INSINGLEQUOTATION);
 					} else if (c === '"'){
 						state.push(State.INQUOTATION);
+					} else if (c === '!'){
+						saveToken(Token.type.SIMBOL);
 					} else if (c === $.Stream.EOF) {
 						putBack();
 						state.change(State.DONE);
@@ -601,7 +608,7 @@ var lighter = (function () {
 						state.pop();
 					} else if ($.type.isAlpha(c) || c === '#'){
 						putBack();
-						state.push(State.INVALUE);
+						state.push(State.INVALUEAREA);
 					} else if (c === '\''){
 						state.push(State.INSINGLEQUOTATION);
 					} else if (c === '"'){
@@ -610,8 +617,7 @@ var lighter = (function () {
 						saveToken(Token.type.EOL);
 					} else if (c === '}') {
 						saveToken(Token.type.SIMBOL);
-						state.pop();
-						state.pop();
+						state.popUntil(State.INBRACKET);
 					} else if ($.type.isWhite(c)) {
 						state.push(State.INWHITE);
 					} else if (c === $.Stream.EOF) {
@@ -622,7 +628,7 @@ var lighter = (function () {
 
 				case State.INNUM:
 					if (!$.type.isNum(c) && c !== '.') {
-						if ($.type.isAlpha(c)) {
+						if ($.type.isAlpha(c) || c === '%') {
 							state.change(State.INUNIT);
 						} else {
 							state.pop();
@@ -673,8 +679,8 @@ var lighter = (function () {
 					break;
 
 				case State.INCOMMENT:
-					if (c === '-') {
-						if (stream.match('->')) {
+					if (c === '*') {
+						if (stream.pick() === '/') {
 							state.change(State.COMMENTEND);
 							putBack();
 						}
@@ -686,7 +692,7 @@ var lighter = (function () {
 					break;
 
 				case State.COMMENTEND:
-					if (c === '>') {
+					if (c === '/') {
 						state.pop();
 						saveToken(Token.type.COMMENT);
 					}
@@ -855,7 +861,7 @@ var lighter = (function () {
 							} else {
 								stream.putBack();
 								saveToken    = true;
-								currentToken = Token.type.PLAINTEXT;
+								currentToken = Token.type.COMMENTBEGIN;
 								save         = false;
 							}
 						} else if (c === $.Stream.EOF) {
