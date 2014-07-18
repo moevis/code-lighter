@@ -22,6 +22,10 @@
 	color: rgb(102, 217, 239);
 }
 
+.dark .javascript .function {
+	color: rgb(249, 38, 114);
+}
+
 .light .javascript .keys {
 	color: rgb(68, 111, 189);
 }

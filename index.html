@@ -7,8 +7,8 @@
 			window.onload = function () {
 				//comment
 				var code = lighter.code({target: document.getElementById('htmlarea'), language:'html', style: 'light'});
-				var code2 = lighter.code({target: document.getElementById('javascriptarea'), language:'javascript', style: 'light'});
-				var code3 = lighter.code({target: document.getElementById('cssarea'), language:'css', style: 'light'});
+				var code2 = lighter.code({target: document.getElementById('javascriptarea'), language:'javascript', style: 'dark'});
+				var code3 = lighter.code({target: document.getElementById('cssarea'), language:'css', style: 'dark'});
 				code.on();
 				code2.on();
 				code3.on();
@@ -34,7 +34,12 @@
 	<body>
 <pre><div id="cssarea">#hi, tagname{
 		background: #eee;
-	}</div></pre>
+		margin: 1px 2px 0 4px;
+		font-family: "microsoft Yahei", Sans;
+		background-image: url("./logo.gif");
+		-webkit-box-shadow: 5px 5px 15px #fff;
+		transform: rotate(3deg);
+}</div></pre>
 <pre><div id="htmlarea">&lt;span&nbsp;class='welcome'&gt;hi&lt;/span&gt;
 	&lt;!--&nbsp;ok&nbsp;--&gt;
 	&lt;script&nbsp;type='text/javascript'&gt;&lt;/script&gt;

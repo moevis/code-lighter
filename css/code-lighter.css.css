@@ -1,0 +1,43 @@
+.dark .css .selector {
+	color: rgb(166, 226, 46);
+}
+
+.dark .css .comment {
+	color: rgb(117, 113, 94);
+}
+
+.dark .css .number {
+	color: rgb(174, 129, 255);
+}
+
+.dark .css .value {
+	color: rgb(230, 219, 116);
+}
+
+.dark .css .unit {
+	color: rgb(249, 38, 114);
+}
+
+.dark .css .property {
+	color: rgb(102, 217, 239);
+}
+
+.light .css .attribute {
+	color: rgb(115, 141, 0);
+}
+
+.light .css .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .css .number {
+	color: rgb(174, 129, 255);
+}
+
+.light .css .value {
+	color: rgb(241, 137, 0);
+}
+
+.light .css .selector {
+	color: rgb(68, 111, 189);
+}

@@ -624,9 +624,19 @@ var lighter = (function () {
 					if (!$.type.isNum(c) && c !== '.') {
 						if ($.type.isAlpha(c)) {
 							state.change(State.INUNIT);
+						} else {
+							state.pop();
 						}
 						putBack();
 						saveToken(Token.type.NUMBER);
+					}
+					break;
+
+				case State.INUNIT:
+					if (!$.type.isAlpha(c)) {
+						state.pop();
+						putBack();
+						saveToken(Token.type.UNIT);
 					}
 					break;
 
@@ -689,6 +699,9 @@ var lighter = (function () {
 					buffer += intent;
 				} else {
 					buffer += c;
+					if (buffer.length > 100) {
+						return tokens;
+					}
 				}
 			}
 
