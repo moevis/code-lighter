@@ -7,8 +7,11 @@ Currently support highlighting for :
 
 * javascript
 * html
+* css
 
-No dependencies for other javascript library. Using token analysing instead of regex matching.
+And all of above have both light theme and dark theme.
+
+No dependencies for other javascript library. Using tokens analysing instead of regex matching.
 
 preview
 ![alt tag](https://raw.githubusercontent.com/icymorn/code-lighter/master/preview.png)
@@ -20,15 +23,15 @@ first, include the css and code-lighter.js.
 HTML code
 
 ```
-		<div id="area">
-			//comment
-			function helloworld() {
-				for (var i = 0; i < 10; i++) {
-					console.log(i);
-				}
-				alert("hello");
-			}
-		</div>
+<pre><div id="area">
+	//comment
+	function helloworld() {
+		for (var i = 0; i < 10; i++) {
+			console.log(i);
+		}
+		alert("hello");
+	}
+</div></pre>
 ```
 
 javascript initializing:
