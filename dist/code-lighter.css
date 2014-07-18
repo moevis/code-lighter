@@ -79,8 +79,13 @@
 }
 
 .light .css .number {
-	color: rgb(174, 129, 255);
+	color: rgb(115, 141, 0);
 }
+
+.light .css .unit {
+	color: rgb(115, 141, 0);
+}
+
 
 .light .css .value {
 	color: rgb(241, 137, 0);
