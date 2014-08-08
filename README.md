@@ -22,7 +22,7 @@ first, include the css and code-lighter.js.
 
 HTML code
 
-```
+```js
 <pre><div id="area">
 	//comment
 	function helloworld() {
@@ -35,7 +35,7 @@ HTML code
 ```
 
 javascript initializing:
-```
+```js
 var option = {
 	target: document.querySelector('#area'),	// target element
 	language: 'javascript',
