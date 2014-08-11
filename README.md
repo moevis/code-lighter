@@ -1,7 +1,7 @@
 code-lighter
 ============
 
-This is an extremely lightweight tool for code heighlighting.
+This is an extremely lightweight tool for code heighlighting.<a href="http://icymorn.github.io/code-lighter/">Example Page</a>
 
 Currently support highlighting for :
 
@@ -22,7 +22,7 @@ first, include the css and code-lighter.js.
 
 HTML code
 
-```js
+```html
 <pre><div id="area">
 	//comment
 	function helloworld() {
