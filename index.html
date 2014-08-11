@@ -1,71 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Code-lighter by icymorn</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Code-lighter</title>
+    <link rel="stylesheet" href="stylesheets/index.css">
+    <link rel="stylesheet" href="stylesheets/code-lighter.css">
+    <script src="javascripts/code-lighter.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div id="head">
         <h1>Code-lighter</h1>
-        <p>an extremely lightweight and fast code highlighting tools</p>
-
-        <p class="view"><a href="https://github.com/icymorn/code-lighter">View the Project on GitHub <small>icymorn/code-lighter</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/icymorn/code-lighter/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/icymorn/code-lighter/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/icymorn/code-lighter">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/icymorn">icymorn</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+        <h2>An extremely lightweight and fast code highlighting tools</h2>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+    <div id="description">
+        <h3>Introduction</h3>
+
+        <div class="detail">
+            <p>Code-lighter is a light-weight syntax highlight plugin.</p>
+            <p>It was written in pure javascript, and no dependcies for other library. It has two themes now and you can custmize your own style. Code-lighter uses a method by parsing and analysing the code and has more accurate then those that using Regex. Currently the language supported are:</p>
+            <ul>
+                <li>Javascript</li>
+                <li>HTML</li>
+                <li>CSS</li>
+            </ul>
+            <p>Of course, you can join us and add support for more language.</p>
+        </div>
+        <a class="btn" href="https://github.com/icymorn/code-lighter/zipball/master">.ZIP file</a>
+        <a class="btn" href="https://github.com/icymorn/code-lighter/tarball/master">.TAR file</a>
+        <a class="btn" href="https://github.com/icymorn/code-lighter">Github</a>
+
+        <h3>Usage</h3>
+
+        <div class="detail">
+            <p>First wrap the code using &#x3C;pre&#x3E; tag.</p>
+
+<pre><div class="code-display">
+    &#x3C;pre&#x3E;
+    &#x3C;div id=&#x27;js&#x27;&#x3E;
+    // comment line
+    function bar(){
+    var foo = &#x27;hello&#x27;;
+    var number = 5 * 6 / 20;
+    return foo;
+    }
+
+    var id = document.getElementById(&#x27;id&#x27;);
+    window.onload = function() {alert(&#x27;hello world&#x27;);};
+    &#x3C;/div&#x3E;
+    &#x3C;/pre&#x3E;
+</div></pre>
+
+            <p>then run</p>
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript'</p>
+                <p>});</p></div>
+            <p>now using <span class="code-display">code.on()</span> or <span class="code-display">code.off()</span> to turn on/off the highlight.</p>
+        </div>
+
+        <h3>Theme</h3>
+
+        <div class="detail">using dark theme.
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'dark'</p>
+                <p>});</p></div>
+        </div>
+
+<pre><div id="js">&#x3C;pre&#x3E;
+    &#x3C;div id=&#x27;js&#x27;&#x3E;
+    // comment line
+    function bar(){
+    var foo = &#x27;hello&#x27;;
+    var number = 5 * 6 / 20;
+    return foo;
+    }
+
+    var id = document.getElementById(&#x27;id&#x27;);
+    window.onload = function() {alert(&#x27;hello world&#x27;);};
+    &#x3C;/div&#x3E;
+    &#x3C;/pre&#x3E;</div></pre>
+
+        <div class="detail">using light theme.
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'light'</p>
+                <p>});</p></div>
+        </div>
+
+<pre><div id="js-light">&#x3C;pre&#x3E;
+    &#x3C;div id=&#x27;js&#x27;&#x3E;
+    // comment line
+    function bar(){
+    var foo = &#x27;hello&#x27;;
+    var number = 5 * 6 / 20;
+    return foo;
+    }
+
+    var id = document.getElementById(&#x27;id&#x27;);
+    window.onload = function() {alert(&#x27;hello world&#x27;);};
+    &#x3C;/div&#x3E;
+    &#x3C;/pre&#x3E;</div></pre>
+
+        <h3>Option</h3>
+        <div class="detail">
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'light'</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;lineSpace:4</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;lineNumber:false</p>
+                <p>});</p></div>
+        </div>
+        <h3>About</h3>
+        <div class="detail">
+            <p>The code is under MIT Lisense.</p>
+            <p>This project is maintained by <a href="https://github.com/icymorn">icymorn</a></p>
+        </div>
+    </div>
+</div>
+<script>
+    var code = lighter.code({target:document.getElementById('js'),language:'javascript'});
+    code.on();
+    var code2 = lighter.code({target:document.getElementById('js-light'),language:'javascript',style:'light'});
+    code2.on();
+</script>
+</body>
 </html>

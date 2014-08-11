@@ -13,7 +13,7 @@ body, html {
     padding: 10px 0;
     width: 600px;
     margin: 0 auto;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #ccc;
     border-top: none;
     border-bottom: none;
     min-heigt: 100%;
@@ -34,10 +34,11 @@ body, html {
     font-weight: lighter;
 }
 #head h2{
-    color: #0b97c4;
+    color: #528CE0;
     font-family: "Open Sans",sans-serif;
     font-weight: lighter;
     font-size: 18px;
+    margin-top: 10px;
 }
 
 #description .detail{
@@ -61,7 +62,7 @@ body, html {
 }
 
 #description h3 {
-    border: 1px solid #eee;
+    border: 1px solid #ccc;
     border-left: none;
     border-right: none;
     width: 100%;
@@ -77,4 +78,25 @@ body, html {
 #js, #js-light {
     margin: 15px 0;
     box-shadow: 0 0 15px #aaa;
+}
+
+.btn {
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid #bbb;
+    text-indent: 0;
+    text-decoration: none;
+    color: #2b81af;
+    font-weight: normal;
+    font-family: "Open Sans",sans-serif;
+    font-size: 20px;
+    border-radius: 4px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #2b81af;
+    color:#ffffff;
+    border: 1px solid #2b81af;
 }
