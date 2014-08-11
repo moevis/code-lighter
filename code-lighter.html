@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Code-lighter</title>
+    <link rel="stylesheet" href="stylesheets/index.css">
+    <link rel="stylesheet" href="stylesheets/code-lighter.css">
+    <script src="javascripts/code-lighter.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div id="head">
+        <h1>Code-lighter</h1>
+        <h2>an extremely lightweight and fast code highlighting tools</h2>
+    </div>
+    <div id="description">
+        <h3>Introduction</h3>
+
+        <div class="detail">
+            <p>Code-lighter is a light-weight syntax highlight plugin.</p>
+            <p>It was written in pure javascript, and no dependcies for other library. It has two themes now and you can custmize your own style. Code-lighter uses a method by parsing and analysing the code and has more accurate then those that using Regex. Currently the language supported are:</p>
+            <ul>
+                <li>Javascript</li>
+                <li>HTML</li>
+                <li>CSS</li>
+            </ul>
+            <p>Of course, you can join us and add support for more language.</p>
+        </div>
+
+        <h3>Usage</h3>
+
+        <div class="detail">
+        <p>First wrap the code using &#x3C;pre&#x3E; tag.</p>
+
+<pre><div class="code-display">
+    &#x3C;pre&#x3E;
+        &#x3C;div id=&#x27;js&#x27;&#x3E;
+            // comment line
+            function bar(){
+                var foo = &#x27;hello&#x27;;
+                var number = 5 * 6 / 20;
+                return foo;
+            }
+
+            var id = document.getElementById(&#x27;id&#x27;);
+            window.onload = function() {alert(&#x27;hello world&#x27;);};
+        &#x3C;/div&#x3E;
+    &#x3C;/pre&#x3E;
+</div></pre>
+
+        <p>then run</p>
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript'</p>
+                <p>});</p></div>
+        <p>now using <span class="code-display">code.on()</span> or <span class="code-display">code.off()</span> to turn on/off the highlight.</p>
+        </div>
+
+        <h3>Theme</h3>
+
+        <div class="detail">using dark theme.
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'dark'</p>
+                <p>});</p></div>
+        </div>
+
+<pre><div id="js">&#x3C;pre&#x3E;
+    &#x3C;div id=&#x27;js&#x27;&#x3E;
+    // comment line
+    function bar(){
+        var foo = &#x27;hello&#x27;;
+        var number = 5 * 6 / 20;
+        return foo;
+    }
+
+    var id = document.getElementById(&#x27;id&#x27;);
+    window.onload = function() {alert(&#x27;hello world&#x27;);};
+    &#x3C;/div&#x3E;
+&#x3C;/pre&#x3E;</div></pre>
+
+        <div class="detail">using light theme.
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'light'</p>
+                <p>});</p></div>
+        </div>
+
+<pre><div id="js-light">&#x3C;pre&#x3E;
+    &#x3C;div id=&#x27;js&#x27;&#x3E;
+    // comment line
+    function bar(){
+        var foo = &#x27;hello&#x27;;
+        var number = 5 * 6 / 20;
+        return foo;
+    }
+
+    var id = document.getElementById(&#x27;id&#x27;);
+    window.onload = function() {alert(&#x27;hello world&#x27;);};
+    &#x3C;/div&#x3E;
+&#x3C;/pre&#x3E;</div></pre>
+
+        <h3>Option</h3>
+        <div class="detail">
+            <div class="code-display"><p>var code = lighter.code({</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;target:document.getElementById('js'),</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;language:'javascript',</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;style:'light'</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;lineSpace:4</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;lineNumber:false</p>
+                <p>});</p></div>
+        </div>
+        <h3>About</h3>
+        <div class="detail">
+            <p>The code is under MIT Lisense.</p>
+        </div>
+    </div>
+</div>
+<script>
+    var code = lighter.code({target:document.getElementById('js'),language:'javascript'});
+    code.on();
+    var code2 = lighter.code({target:document.getElementById('js-light'),language:'javascript',style:'light'});
+    code2.on();
+</script>
+</body>
+</html>

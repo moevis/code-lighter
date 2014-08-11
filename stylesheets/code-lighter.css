@@ -1,0 +1,190 @@
+.code-lighter {
+	background: black;
+	color: white;
+	font-family:  Consolas, Inconsolata, Monaco, monospace;
+	width: 100%;
+	font-size: 10pt;
+	padding: 0;
+}
+
+.code-lighter .code{
+	padding: 1em 1em 1em 0;
+}
+
+.code-lighter .aside{
+	padding: 1em 0.5em 1em 1em;
+	margin-right: 0.5em;
+	float: left;
+}
+
+.code-lighter .line-number{
+	display: block;
+	text-align: right;
+}
+
+.code-lighter.dark {
+	background: black;
+	color: white;
+}
+
+
+.code-lighter.dark .aside{
+	border-right: 1px solid #3C3C3C;
+	background: #242424;
+	color: #ccc;
+}
+
+
+.code-lighter.light {
+	border: 1px solid #eee;
+	background: rgb(248, 248, 248);
+	color: rgb(83, 83, 83);
+}
+
+.code-lighter.light .aside{
+	border-right: 1px solid #aaa;
+	background: rgb(255, 255, 255);
+	color: rgb(162, 162, 162);
+}
+.dark .css .selector {
+	color: rgb(166, 226, 46);
+}
+
+.dark .css .comment {
+	color: rgb(117, 113, 94);
+}
+
+.dark .css .number {
+	color: rgb(174, 129, 255);
+}
+
+.dark .css .value {
+	color: rgb(230, 219, 116);
+}
+
+.dark .css .unit {
+	color: rgb(249, 38, 114);
+}
+
+.dark .css .property {
+	color: rgb(102, 217, 239);
+}
+
+.light .css .attribute {
+	color: rgb(115, 141, 0);
+}
+
+.light .css .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .css .number {
+	color: rgb(115, 141, 0);
+}
+
+.light .css .unit {
+	color: rgb(115, 141, 0);
+}
+
+
+.light .css .value {
+	color: rgb(241, 137, 0);
+}
+
+.light .css .selector {
+	color: rgb(68, 111, 189);
+}
+.dark .html .attribute {
+	color: rgb(166, 226, 46);
+}
+
+.dark .html .comment {
+	color: rgb(117, 113, 94);
+}
+
+.dark .html .number {
+	color: rgb(174, 129, 255);
+}
+
+.dark .html .value {
+	color: rgb(230, 219, 116);
+}
+
+.dark .html .equal {
+	color: rgb(249, 38, 114);
+}
+
+.dark .html .tag {
+	color: rgb(249, 38, 114);
+}
+
+.light .html .attribute {
+	color: rgb(115, 141, 0);
+}
+
+.light .html .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .html .number {
+	color: rgb(174, 129, 255);
+}
+
+.light .html .value {
+	color: rgb(241, 137, 0);
+}
+
+.light .html .tag {
+	color: rgb(68, 111, 189);
+}
+.dark .javascript .keys {
+	color: rgb(249, 38, 114);
+}
+
+.dark .javascript .comment {
+	color: rgb(117, 113, 94);
+}
+
+.dark .javascript .number {
+	color: rgb(174, 129, 255);
+}
+
+.dark .javascript .string {
+	color: rgb(230, 219, 116);
+}
+
+.dark .javascript .operation {
+	color: rgb(249, 38, 114);
+}
+
+.dark .javascript .buildinmethod {
+	color: rgb(102, 217, 239);
+}
+
+.dark .javascript .function {
+	color: rgb(249, 38, 114);
+}
+
+.light .javascript .keys {
+	color: rgb(68, 111, 189);
+}
+
+.light .javascript .function {
+	color: rgb(68, 111, 189);
+}
+
+.light .javascript .comment {
+	color: rgb(162, 162, 162);
+}
+
+.light .javascript .string {
+	color: rgb(241, 137, 0);
+}
+
+.light .javascript .operation {
+	color: rgb(115, 141, 0);
+}
+
+.light .javascript .buildinmethod {
+	color: rgb(115, 141, 0);
+}
