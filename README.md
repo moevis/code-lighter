@@ -1,7 +1,9 @@
 code-lighter
 ============
 
-This is an extremely lightweight tool for code heighlighting.<a href="http://icymorn.github.io/code-lighter/">Example Page</a>
+This is an extremely lightweight tool for code heighlighting.
+
+You can go to <a href="http://icymorn.github.io/code-lighter/">Example Page</a> to see demos.
 
 Currently support highlighting for :
 
@@ -47,6 +49,18 @@ var code = lighter.code();
 ```
 
 Then, Using `code.on()` to highlight the code. Using `code.off()` to disable highlight.
+
+In a more convinient way, using `lighter.auto()` when page loaded, code-lighter will highligh the code which have attribute "codelighter", like below.
+```html
+<pre>
+	<div codelighter='javascript'>
+	function(){
+	
+	}
+	</diiv>
+</pre>
+```
+
 
 ## License
 
