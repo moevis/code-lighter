@@ -57,7 +57,7 @@ In a more convenient way, using `lighter.auto()` when page is loaded, code-light
 	function(){
 	
 	}
-	</diiv>
+	</div>
 </pre>
 ```
 
