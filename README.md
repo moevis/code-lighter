@@ -5,22 +5,22 @@ This is an extremely lightweight tool for code heighlighting.
 
 You can go to <a href="http://icymorn.github.io/code-lighter/">Example Page</a> to see demos.
 
-Currently support highlighting for :
+Currently support highlighting for:
 
 * javascript
 * html
 * css
 
-And all of above have both light theme and dark theme.
+And all of above have both a light theme and a dark theme.
 
-No dependencies for other javascript library. Using tokens analysing instead of regex matching.
+No dependencies on other javascript libraries. It uses lexical analysis instead of regex matching.
 
 preview
 ![alt tag](https://raw.githubusercontent.com/icymorn/code-lighter/master/preview.png)
 
 ## Simple usage
 
-first, include the css and code-lighter.js.
+First, include the css and code-lighter.js.
 
 HTML code
 
@@ -48,9 +48,9 @@ var option = {
 var code = lighter.code();
 ```
 
-Then, Using `code.on()` to highlight the code. Using `code.off()` to disable highlight.
+Then, Using `code.on()` to highlight the code. Using `code.off()` to disable highlighting.
 
-In a more convinient way, using `lighter.auto()` when page loaded, code-lighter will highligh the code which have attribute "codelighter", like below.
+In a more convenient way, using `lighter.auto()` when page is loaded, code-lighter will highlight the code which has the attribute "codelighter", like below.
 ```html
 <pre>
 	<div codelighter='javascript'>
