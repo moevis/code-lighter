@@ -3,7 +3,7 @@ code-lighter
 
 This is an extremely lightweight tool for code heighlighting.
 
-You can go to <a href="http://icymorn.github.io/code-lighter/">Example Page</a> to see demos.
+You can go to <a href="http://moevis.github.io/code-lighter/">Example Page</a> to see demos.
 
 Currently support highlighting for:
 
@@ -16,7 +16,7 @@ And all of above have both a light theme and a dark theme.
 No dependencies on other javascript libraries. It uses lexical analysis instead of regex matching.
 
 preview
-![alt tag](https://raw.githubusercontent.com/icymorn/code-lighter/master/preview.png)
+![alt tag](https://raw.githubusercontent.com/moevis/code-lighter/master/preview.png)
 
 ## Simple usage
 
