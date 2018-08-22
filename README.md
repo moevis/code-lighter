@@ -3,7 +3,7 @@ code-lighter
 
 This is an extremely lightweight tool for code heighlighting.
 
-You can go to <a href="http://moevis.github.io/code-lighter/">Example Page</a> to see demos.
+You can go to <a href="https://moevis.github.io/code-lighter/">Example Page</a> to see demos.
 
 Currently support highlighting for:
 
